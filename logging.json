@@ -1,0 +1,48 @@
+{
+    "version": 1,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
+        }
+    },
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "simple",
+            "stream": "ext://sys.stdout"
+        },
+
+        "info_file_handler": {
+            "class": "logging.FileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "/home/ebayb2c/SmartconEbayAdmin/logs/server.log",
+            "encoding": "utf-8"
+        },
+
+        "info_time_handler": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "when": "midnight",
+            "interval": 1,
+            "filename": "/home/ebayb2c/SmartconEbayAdmin/logs/server.log",
+            "encoding": "utf-8"
+        }
+
+    },
+    "loggers": {
+        "filelogger": {
+            "level": "DEBUG",
+            "handlers": ["info_time_handler"],
+            "propagate": 0,
+            "format": "%(asctime)s %(message)s"
+        }
+    },
+    "root": {
+        "level": "DEBUG",
+        "handlers": ["console", "info_file_handler"]
+    }
+}

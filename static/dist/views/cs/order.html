@@ -1,0 +1,421 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="row">
+          <div class="input-group date col-3">
+              <select ng-model="model.data_select" style="width: 100%;">
+                  <option value="">검색조건</option>
+                  <option value="option1">채널 주문번호</option>
+                  <option value="option2">채널 상품코드</option>
+                  <option value="option3">상품명</option>
+                  <option value="option4">채널</option>
+                  <option value="option5">주문자HP</option>
+                  <option value="option6">수신자HP</option>
+                  <option value="option7">연동코드</option>
+                  <option value="option8">바코드</option>
+              </select>
+          </div>
+          <div class="input-group date col-3">
+              <input type="text" class="form-control" ng-model="model.search_text">
+          </div>
+      </div>
+
+      <div class="row" style="margin-top: 20px;">
+          <div class="input-group date col-3">
+              <input type="text" class="form-control" ng-model="model.start_date" ng-readonly="true"><span class="input-group-addon"><i class="icon-calendar" id="calendarStart"></i></span>
+          </div>
+          ~
+          <div class="input-group date col-3">
+              <input type="text" class="form-control" ng-model="model.end_date" ng-readonly="true"><span class="input-group-addon"><i class="icon-calendar" id="calendarEnd"></i></span>
+          </div>
+
+          <button type="button" class="btn btn-primary" ng-click="onGetOrderList()">조회</button>
+      </div>
+
+
+      <span us-spinner="{radius:18, width:8, length: 16}" spinner-key="spinner-1"></span>
+
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> 주문내역
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                  <th>채널 주문번호</th>
+                  <th>채널 상품코드</th>
+                  <th>상품명</th>
+                  <th>B2C채널</th>
+                  <!--<th>상태</th>-->
+                  <th>주문자HP</th>
+                  <th>수신자HP</th>
+                  <th>연동코드</th>
+                  <th>EVENT ID</th>
+                  <th>바코드 번호</th>
+                  <th>발송상태</th>
+                  <th>발송요청일</th>
+                  <th>발송완료일</th>
+                  <th>교환상태</th>
+                  <th>쿠폰상태</th>
+                  <th>상태 업데이트</th>
+              </tr>
+            </thead>
+            <tbody>
+                  <tr ng-repeat="order in filteredOrders track by $index">
+                      <td>{{order.order_no}}</td>
+                      <td>{{order.item_no}}</td>
+                      <td ng-click="onClickOrder(order)" style="color: blue; text-decoration: underline;">{{order.item_name}}</td>
+                      <td>{{order.member_id}}</td>
+                      <!--<td ng-if="order.send_status == '전송성공'">-->
+                          <!--<span class="badge badge-success">발송완료</span>-->
+                      <!--</td>-->
+                      <!--<td ng-if="order.send_status != '전송성공'">-->
+                          <!--<span class="badge badge-danger">발송대기</span>-->
+                      <!--</td>-->
+                      <td>{{order.buyer_mobile}}</td>
+                      <td>{{order.receiver_mobile}}</td>
+                      <td>{{order.out_item_no}}</td>
+                      <td>{{order.svc_event_id}}</td>
+                      <td>
+                          <div>{{order.svc_barcode_num}}</div>
+                          <div ng-click="onClickBarcode()" style="color: blue; text-decoration: underline;">SCMS 조회</div>
+                      </td>
+
+                      <!--발송 상태-->
+                      <td>
+                          {{order.send_status}}
+                          <span class="badge badge-dark" ng-click="onClickResend(order)">재발송</span>
+                          <span class="badge badge-dark" ng-click="onClickResendNewNumber(order)">번호 변경 재발송</span>
+                      </td>
+
+                      <!--발송 요청일-->
+                      <td>{{order.send_request_date}}</td>
+
+                      <!--발송 완료일-->
+                      <td ng-if="order.send_status == '전송성공'">
+                          {{order.send_request_date}}
+                      </td>
+                      <td ng-if="order.send_status != '전송성공'">
+                          [발송실패]<br/>
+                          {{order.exception}}
+                      </td>
+
+                      <!-- 교환 상태 -->
+                      <td ng-if="order.exchange_status == 1">
+                          <span class="badge badge-success">교환</span>
+                      </td>
+                      <td ng-if="order.exchange_status != 1">
+                          <span class="badge badge-warning">미교환</span>
+                      </td>
+
+                      <!-- 쿠폰 상태 -->
+                      <td ng-if="order.claim_type == 'N'">
+                          <span class="badge badge-success">정상</span>
+                      </td>
+                      <td ng-if="order.claim_type == 'CC'">
+                          <span class="badge badge-danger">폐기</span>
+                          <div>{{ order.cancel_user }}</div>
+                      </td>
+                      <td ng-if="order.claim_type == 'RS'">
+                          <span class="badge badge-warning">환불요청</span>
+                      </td>
+                      <td ng-if="order.claim_type == 'RE'">
+                          <span class="badge badge-dark">환불완료</span>
+                      </td>
+
+                      <td>
+                          <span class="badge badge-dark" ng-click="onUpdateState(order)">업데이트</span>
+                      </td>
+                </tr>
+            </tbody>
+          </table>
+
+          <div class="row">
+              <div class="col">
+                  <pagination boundary-links="true"
+                      max-size="10"
+                      items-per-page="itemsPerPage"
+                      total-items="orderList.length"
+                      ng-model="currentPage"
+                      ng-change="pageChanged()">
+                  </pagination>
+              </div>
+              <div>
+                  <button type="button" class="btn btn-primary" ng-click="onUpdateAll()">전체 상태 업데이트</button>
+                  <button type="button" class="btn btn-primary" ng-click="onDownLoadExcel()">엑셀 다운로드</button>
+              </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalOrderDetail">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">주문 상세</h5>
+        </div>
+        <div class="modal-body">
+            <div>
+                <h3>채널 정보</h3>
+            </div>
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>채널 주문번호</th>
+                        <th>채널 상품코드</th>
+                        <th>상품명</th>
+                        <th>B2C 채널</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{detailOrder.order_no}}</td>
+                        <td>{{detailOrder.item_no}}</td>
+                        <td>{{detailOrder.item_name}}</td>
+                        <td>{{detailOrder.member_id}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <h3>주문 정보</h3>
+            </div>
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>주문자 HP</th>
+                        <th>수신자 HP</th>
+                        <th>연동코드</th>
+                        <th>EVENT ID</th>
+                        <th>바코드 번호</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{detailOrder.buyer_mobile}}</td>
+                        <td>{{detailOrder.receiver_mobile}}</td>
+                        <td>{{detailOrder.out_item_no}}</td>
+                        <td>{{detailOrder.svc_event_id}}</td>
+                        <td>{{detailOrder.svc_barcode_num}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <h3>상태 정보</h3>
+            </div>
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>발송 요청일</th>
+                        <th>발송 완료일</th>
+                        <th>발송 상태</th>
+                        <th>교환 상태</th>
+                        <th>쿠폰 상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <!-- 발송 요청일 -->
+                        <td>{{detailOrder.send_request_date}}</td>
+
+                        <!-- 발송 완료일 -->
+                        <td ng-if="detailOrder.send_status == '전송성공'">
+                          {{detailOrder.send_request_date}}
+                        </td>
+                        <td ng-if="detailOrder.send_status != '전송성공'">
+                          [발송실패]<br/>
+                          {{detailOrder.exception}}
+                        </td>
+
+                        <!--발송 상태-->
+                        <td>
+                          {{detailOrder.send_status}}
+                        </td>
+
+                        <!-- 교환 상태 -->
+                        <td ng-if="detailOrder.exchange_status == 1">
+                          교환
+                        </td>
+                        <td ng-if="detailOrder.exchange_status != 1">
+                          미교환
+                        </td>
+
+                        <!-- 쿠폰 상태 -->
+                        <td ng-if="detailOrder.claim_type == 'N'">
+                          정상
+                        </td>
+                        <td ng-if="detailOrder.claim_type == 'CC'">
+                          폐기
+                        </td>
+                        <td ng-if="detailOrder.claim_type == 'RS'">
+                          환불요청
+                        </td>
+                        <td ng-if="detailOrder.claim_type == 'RE'">
+                          환불완료
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>교환 일자</th>
+                        <th>클레임 일자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ detailOrder.exchange_date }}
+                        </td>
+                        <td>
+                            {{ detailOrder.claim_date }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <h3>재발송 정보</h3>
+            </div>
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>순번</th>
+                        <th>주문자 HP</th>
+                        <th>수신자 HP</th>
+                        <th>바코드 번호</th>
+                        <th>발송 일시</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="resend in resendInfo track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{resend.buyer_mobile}}</td>
+                        <td>{{resend.receiver_mobile}}</td>
+                        <td>{{resend.barcode_num}}</td>
+                        <td>{{resend.resend_date}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <h3>기타</h3>
+            </div>
+            <table class="table table-bordered table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>종료일</th>
+                        <th>유효기간 연장</th>
+                        <th>주문 취소</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{detailOrder.valid_end}}
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="number" class="form-control" ng-model="add_date">
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-primary" ng-click="onClickAddDate()">연장</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary" ng-click="onShowCancelOrder()">주문 취소</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <!-- <button type="button" class="btn btn-primary" ng-click="onResend()">전송</button> -->
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalResend">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">재발송</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <span>
+              {{resend_phone}}번호로 재발송 하시겠습니까?
+            </span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary" ng-click="onResend()">전송</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalResendNewNumber">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">재발송</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div>
+              수신자 번호 입력
+            </div>
+            <div>
+                <input type="text" class="form-control" ng-model="resend_num">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary" ng-click="onResendNew()">전송</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalCancelOrder">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">주문취소</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div>
+               주문 취소 하시겠습니까?
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary" ng-click="onCancelOrder()">취소</button>
+        </div>
+    </div>
+  </div>
+</div>

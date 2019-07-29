@@ -1,0 +1,86 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="row">
+        <div class="input-group date col-3">
+            <input type="text" class="form-control" placeholder="전화번호" ng-model="model.phone_num"><span class="input-group-addon"><i class="icon-phone"></i></span>
+        </div>
+
+        <button type="button" class="btn btn-primary" ng-click="onGetBlackList()">조회</button>
+      </div>
+
+      <span us-spinner="{radius:18, width:8, length: 16}" spinner-key="spinner-1"></span>
+
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> 블랙리스트 조회
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th>전화 번호</th>
+                <th>등록일</th>
+                <th>수정일</th>
+                <th>등록 사유</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in blacklist track by $index" ng-click="onClickList(item)">
+                <td>{{item.phone_num}}</td>
+                <td>{{item.regist_date}}</td>
+                <td>{{item.modify_date}}</td>
+                <td>{{item.reason}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pagination boundary-links="true"
+            max-size="10"
+            items-per-page="itemsPerPage"
+            total-items="orderList.length"
+            ng-model="currentPage"
+            ng-change="pageChanged()">
+          </pagination>
+
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalDetail">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">블랙리스트 사용자 정보</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="form-control-label">전화번호 :</label>
+              <input type="text" class="form-control" ng-model="modal.phone_num">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="form-control-label">등록사유 :</label>
+              <textarea class="form-control" placeholder="등록 사유를 입력해 주세요" rows="3" ng-model="modal.reason"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary" ng-click="onUpdate()">수정</button>
+          <button type="button" class="btn btn-primary" ng-click="onDelete()">삭제</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+

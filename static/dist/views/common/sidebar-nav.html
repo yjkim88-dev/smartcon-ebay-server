@@ -1,0 +1,51 @@
+<div class="sidebar">
+  <nav class="sidebar-nav">
+    <ul class="nav">
+
+      <li class="nav-item nav-dropdown" ng-class="{open: $state.includes('app.cs')}">
+        <a class="nav-link nav-dropdown-toggle" ng-class="{active: $state.includes('app.cs')}" href="#">CS 관리</a>
+        <ul class="nav-dropdown-items">
+          	<li class="nav-item">
+    	    	<a class="nav-link" ui-sref-active="active" ui-sref="app.cs.orderlist"><i class="icon-puzzle"></i> 주문내역 조회</a>
+	        </li>
+			  <!--<li class="nav-item">-->
+				<!--<a class="nav-link" ui-sref-active="active" ui-sref="app.cs.resend"><i class="icon-puzzle"></i>재발송 처리</a>-->
+			  <!--</li>-->
+        </ul>
+      </li>
+
+      <li class="nav-item nav-dropdown" ng-class="{open: $state.includes('app.goods')}">
+      	<a class="nav-link nav-dropdown-toggle" ng-class="{active: $state.includes('app.goods')}" href="#">상품 관리</a>
+      	<ul class="nav-dropdown-items">
+	        <li class="nav-item">
+		        <a class="nav-link" ui-sref-active="active" ui-sref="app.goods.goodslist"><i class="icon-puzzle"></i> 등록 상품 조회</a>
+		    </li>
+	      	<!--<li class="nav-item">-->
+	        	<!--<a class="nav-link" ui-sref-active="active" ui-sref="app.goods.regist"><i class="icon-puzzle"></i>지마켓 상품 등록</a>-->
+	      	<!--</li>-->
+          <li class="nav-item">
+            <a class="nav-link" ui-sref-active="active" ui-sref="app.goods.xlsxRegist"><i class="icon-puzzle"></i>지마켓 상품 등록 (엑셀업로드)</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" ui-sref-active="active" ui-sref="app.goods.ezwelXlsxRegist"><i class="icon-puzzle"></i>이지웰 상품 등록 (엑셀업로드)</a>
+          </li>
+          <!--<li class="nav-item">-->
+            <!--<a class="nav-link" ui-sref-active="active" ui-sref="app.goods.regist_auc"><i class="icon-puzzle"></i>옥션 상품 등록</a>-->
+          <!--</li>-->
+      	</ul>
+      </li>
+
+      <li class="nav-item nav-dropdown" ng-class="{open: $state.includes('app.blacklist')}">
+      	<a class="nav-link nav-dropdown-toggle" ng-class="{active: $state.includes('app.blacklist')}" href="#">블랙리스트 관리</a>
+		    <ul class="nav-dropdown-items">
+          	<li class="nav-item">
+            	<a class="nav-link" ui-sref-active="active" ui-sref="app.blacklist.search"><i class="icon-puzzle"></i> 블랙리스트 조회</a>
+          	</li>
+          	<li class="nav-item">
+            	<a class="nav-link" ui-sref-active="active" ui-sref="app.blacklist.regist"><i class="icon-puzzle"></i> 블랙리스트 등록</a>
+          	</li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>

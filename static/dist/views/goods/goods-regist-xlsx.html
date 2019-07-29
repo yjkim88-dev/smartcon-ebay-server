@@ -1,0 +1,39 @@
+<div class="animated fadeIn">
+    <ui class="list-group">
+        <li class="list-group-item">
+            <table border="1" width="100%">
+                <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="regist" value="regist" ng-model="model.radio"> 등록
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="modify" value="modify" ng-model="model.radio"> 수정
+                </label>
+
+                <tr>
+                    <th colspan="4" style="padding: 5px; background-color: #b0c4de; text-align: center;">
+                        <span>엑셀 업로드</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th style="padding: 5px; text-align: center; background-color: #b0c4de;">
+                        <span>파일</span>
+                    </th>
+                    <td style="padding: 5px;">
+                        <input type="text" ng-model="filePath" ng-readonly style="width: 100%;">
+                    </td>
+                </tr>
+            </table>
+            <div style="margin-top: 15px; text-align: right;">
+                <!-- <input type="file" value="파일 찾기" class="upload" custom-on-change="uploadFile" style="position: absolute; right: 10px; height: 3px; width: 90px; opacity: 0;"> -->
+
+                <input type="file" import-sheet-js="" multiple="false" style="position: absolute; right: 10px; height: 33px; width: 90px; opacity: 0;" />
+
+                <button type="button" class="btn btn-primary" ng-click="onDownExample()">양식 다운로드</button>
+                <button type="button" class="btn btn-primary" ng-click="onGoodsRegist(1)" ng-if="model.radio == 'regist'">상품 등록</button>
+                <button type="button" class="btn btn-primary" ng-click="onGoodsRegist(1)" ng-if="model.radio == 'modify'">상품 수정</button>
+                <button type="button" class="btn btn-primary">파일 찾기</button>
+
+            </div>
+        </li>
+    </ui>
+</div>
