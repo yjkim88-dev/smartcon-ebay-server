@@ -72,12 +72,6 @@ def shutdown_session(exception=None):
     #db_session.remove()
     Logger.logger.info("shutdown session")
 
-@app.route('/smartconb2c/')
-@app.route('/smartconb2c/main')
-def main():
-    #return render_template('dist/index.html')
-    return app.send_static_file('dist/index.html')
-
 # @app.route('/smartconb2c/resend', methods=['POST', 'GET'])
 # def popup():
 #     print (request.form['GmktItemNo'])
