@@ -14,7 +14,7 @@ def singleton(cls):
 @singleton
 class Logger:
     def __init__(self):
-        with open('/home/ebayb2c/SmartconEbayAdmin/src/logging.json', 'r') as f:
+        with open('logging.json', 'r') as f:
             config = json.load(f)
 
         # 파일명 설정

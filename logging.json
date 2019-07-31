@@ -18,7 +18,7 @@
             "class": "logging.FileHandler",
             "level": "DEBUG",
             "formatter": "simple",
-            "filename": "/home/ebayb2c/SmartconEbayAdmin/logs/server.log",
+            "filename": "./logs/server.log",
             "encoding": "utf-8"
         },
 
@@ -28,7 +28,7 @@
             "formatter": "simple",
             "when": "midnight",
             "interval": 1,
-            "filename": "/home/ebayb2c/SmartconEbayAdmin/logs/server.log",
+            "filename": "./logs/server.log",
             "encoding": "utf-8"
         }
 

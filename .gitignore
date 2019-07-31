@@ -274,3 +274,13 @@ modules.xml
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/flask,python,pycharm+all
+
+# python virtualenv
+ebay/Include
+ebay/Scripts
+ebay/Lib
+ebay/share
+ebay/tcl
+ebay/LICENSE.txt
+#logs
+./logs
