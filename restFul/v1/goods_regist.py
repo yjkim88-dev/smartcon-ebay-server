@@ -76,9 +76,9 @@ class GoodsRegist(Resource):
             default_image_path = args.get('default_image')
             large_image_path = ''
             small_image_path = ''
-
-            expiration_date = args.get('expiration_date')[:4] + '-' + args.get('expiration_date')[4:6] + '-' + \
-                              args.get('expiration_date')[6:]
+            expiration_date = str(args.get('expiration_date'))
+            expiration_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
+                expiration_date[6:]
 
 
             ############ 1 step 상품 등록 ############
