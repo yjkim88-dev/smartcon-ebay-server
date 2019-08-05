@@ -2,6 +2,7 @@
 
 import pymysql.cursors
 from restFul.config import DbCfg
+from Logger import Logger
 
 class MysqlDatabase:
     def __init__(self):
@@ -24,6 +25,10 @@ class MysqlDatabase:
 
             self.conn.commit()
             print (cursor.lastrowid)
+        except Exception as e:
+            Logger.logger.info(e)
+            self.conn.rollback()
+            self.conn.close()
 
         finally:
             self.conn.close()
@@ -39,6 +44,10 @@ class MysqlDatabase:
                 result = cursor.fetchall()
 
                 return result
+        except Exception as e:
+            Logger.logger.info(e)
+            self.conn.rollback()
+            self.conn.close()
 
         finally:
             self.conn.close()
