@@ -40,11 +40,14 @@ def unauthorized():
                          "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, restKey")
     return response
 
+@app.before_request
+def before_request():
+    Logger.logger.info("{}".format(request))
+
 @app.after_request
 def after_request(response):
     restKey = request.headers.get("restKey")
     # userId = request.headers.get("userId")
-
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
     response.headers.add("Access-Control-Allow-Headers",
