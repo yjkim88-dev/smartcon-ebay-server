@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Header>
+        <EncTicket xmlns="http://tpl.gmarket.co.kr/">
+            <encTicket>
+            </encTicket>
+        </EncTicket>
+    </soap:Header>
+    <soap:Body>
+        <AddItem xmlns="http://tpl.gmarket.co.kr/">
+            <AddItem OutItemNo="%s" CategoryCode="%s" GmktItemNo="%s" ItemName="%s" ItemEngName="" ItemDescription=""
+                     GdHtml="%s" GdAddHtml="" GdPrmtHtml=""
+                     MakerNo="%s" BrandNo="%s" ModelName="" IsAdult="false" Tax="Free" FreeGift="" ItemKind="Ecoupon">
+                <ReferencePrice Kind="Quotation" Price="%s" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <Refusal IsPriceCompare="false" IsNego="false" IsJaehuDiscount="false"
+                         xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <ItemImage DefaultImage="%s" LargeImage="%s" SmallImage="%s" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <As Telephone="02-561-0671" Address="Seller" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <Shipping SetType="Use" GroupCode="136" RefundAddrNum="0" TransPolicyNo="38174"
+                          xmlns="http://tpl.gmarket.co.kr/tpl.xsd">
+                    <NewItemShipping FeeCondition="Free" FeeBasePrice="0" Fee="0"/>
+                </Shipping>
+                <BundleOrder BuyUnitCount="1" MinBuyCount="1" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <OrderLimit OrderLimitCount="0" OrderLimitPeriod="0" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <Origin Code="Domestic" Place="서울시 역삼동" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <GoodsKind GoodsKind="New" GoodsStatus="Fine" GoodsTag="New" xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+            </AddItem>
+        </AddItem>
+    </soap:Body>
+</soap:Envelope>

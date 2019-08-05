@@ -20,11 +20,15 @@ from restFul.v1.cp_cancel import Cpcancel
 from B2C.DataBase import MysqlDatabase
 from B2C.user_dao import UserDao
 from Logger import Logger
+from restFul.v2.urls import init_api_v2
 
 import requests, hashlib
 
 app = Flask(__name__, template_folder="static")
 api = Api(app)
+
+init_api_v2(api)
+
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
 
 # app.secret_key = os.urandom(24)
