@@ -2,7 +2,7 @@ import html
 import requests
 
 from Logger import Logger
-from .gmarket_api_models import AddItem
+from .gmarket_api_models import AddItem, gmarket_response
 
 
 class GmarketGoodsService:
@@ -25,6 +25,14 @@ class GmarketGoodsService:
             Logger.logger.info("===== STEP1 RESPONSE ====")
             print(response.content)
             Logger.logger.info(response.content)
+
+            add_item_res_code, add_item_res_msg = gmarket_response(response.content)
+
+            if add_item_res_code != "00":
+                Logger.logger.info("==== SETEP1 FAILD ====")
+                Logger.logger.info(html.escape(add_item_res_msg))
+                return -1, add_item_res_msg
+
 
         except Exception as e:
             Logger.logger.info("error:"+ e)

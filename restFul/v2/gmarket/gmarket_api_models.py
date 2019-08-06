@@ -31,7 +31,7 @@ class AddItem:
             "BrandNo": params.get('brand_no'),
             "ModelName": params.get('model_name'),
             "IsAdult": params.get('is_adult', "false"),
-            "Tax": params.get('tax', "free"),
+            "Tax": params.get('tax', "Free"),
             "FreeGift": params.get('free_gift'),
             "ItemKind": params.get('item_kind', "Ecoupon")
         }
@@ -164,5 +164,15 @@ class AddItem:
         return code, result
 
 
+def gmarket_response(content):
+    namespace = {
+        'soap': "http://schemas.xmlsoap.org/soap/envelope/"
+    }
 
+    tree = ET.ElementTree(ET.fromstring(content.decode()))
+    root = tree.getroot()
+    fault = root.find('soap:Body', namespace).find('soap:Fault', namespace)
+    code = fault.find('faultcode')
+    msg = fault.find('faultstring')
 
+    return code, msg
