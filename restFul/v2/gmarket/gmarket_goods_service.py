@@ -11,18 +11,23 @@ class GmarketGoodsService:
 
     @classmethod
     def postGoodsBundle(cls, params):
-        add_item_code, add_item_result = AddItem(params).set_xml()
-        if add_item_code != "00":
-            return -1, add_item_result
+        try:
+            add_item_code, add_item_result = AddItem(params).set_xml()
+            if add_item_code != "00":
+                return -1, add_item_result
 
-        response = requests.post(
-            url= cls.api_url_add_item,
-            hedaer=cls.headers,
-            data = add_item_result
-        )
+            response = requests.post(
+                url= cls.api_url_add_item,
+                headers=cls.headers,
+                data = add_item_result
+            )
 
-        print(response.content)
-        Logger.logger.info(response.content)
+            Logger.logger.info("===== STEP1 RESPONSE ====")
+            print(response.content)
+            Logger.logger.info(response.content)
 
+        except Exception as e:
+            Logger.logger.info("error:"+ e)
+            return -1, "통신에러가 발생했습니다."
 
 
