@@ -166,20 +166,21 @@ class AddItem:
 
 def gmarket_response(content):
     namespace = {
-        'soap': "http://schemas.xmlsoap.org/soap/envelope/"
+        'soap': "http://schemas.xmlsoap.org/soap/envelope/",
+        'base': "http://tpl.gmarket.co.kr/",
     }
 
     tree = ET.ElementTree(ET.fromstring(content.decode()))
     root = tree.getroot()
-    result = root.find('soap:Body', namespace).find('additemresponse')
     fault = root.find('soap:Body', namespace).find('soap:Fault', namespace)
     fault_code = fault.find('faultcode')
 
     if fault_code is None:
+        response = root.find('soap:Body', namespace).find('base:AddItemResponse', namespace).find('base:AddItemResult', namespace)
         code = "00"
-        result = result.text
+        result = response.attrib
     else:
-        code = "00" if fault_code is None else "-1"
+        code = "-1"
         result = fault.find('faultstring').text
 
     return code, result
