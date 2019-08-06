@@ -171,8 +171,18 @@ def gmarket_response(content):
 
     tree = ET.ElementTree(ET.fromstring(content.decode()))
     root = tree.getroot()
+    result = root.find('soap:Body', namespace).find('additemresponse')
     fault = root.find('soap:Body', namespace).find('soap:Fault', namespace)
-    code = fault.find('faultcode')
-    msg = fault.find('faultstring')
+    fault_code = fault.find('faultcode')
 
-    return code, msg
+    if fault_code is None:
+        code = "00"
+        result = result.text
+    else:
+        code = "00" if fault_code is None else "-1"
+        result = fault.find('faultstring').text
+
+    return code, result
+
+
+

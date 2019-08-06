@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import request
+from restFul.utils import Utils
 from .gmarket_goods_service import GmarketGoodsService
 
 class GmarketGoods(Resource):
@@ -11,8 +12,11 @@ class GmarketGoods(Resource):
         post_type = request.values.get('type')
         if post_type == "excel":
             params = request.json
-            GmarketGoodsService.postGoodsBundle(params)
+            code, result = GmarketGoodsService.postGoodsBundle(params)
+            if code != "00":
+                return Utils().makeResponse((code, result))
 
+        return Utils().makeResponse(code, result)
 
 
         pass
