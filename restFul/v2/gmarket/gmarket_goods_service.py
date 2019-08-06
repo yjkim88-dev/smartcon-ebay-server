@@ -21,7 +21,8 @@ class GmarketGoodsService:
             data = add_item_result
         )
 
-        Logger.logger.info()
+        print(response.content)
+        Logger.logger.info(response.content)
 
 
 
