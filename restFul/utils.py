@@ -29,3 +29,7 @@ class Utils:
         else:
             return str
 
+    @staticmethod
+    def set_xml_element_attrib(element, attr_name, value):
+        if value is not None:
+            element.attrib[attr_name] = str(value)

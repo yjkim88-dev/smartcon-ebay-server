@@ -1,6 +1,10 @@
 import sys, os, configparser
 from Logger import Logger
 
+CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+
+BASE_DIR = os.path.abspath(os.path.join(CONFIG_DIR, os.pardir))
+
 HOST_ADR = 'LOCAL' # LOCAL, TEST, REAL
 
 config_par = configparser.ConfigParser()
