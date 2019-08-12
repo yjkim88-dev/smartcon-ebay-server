@@ -307,12 +307,12 @@ class CouponInfo:
             Logger.logger.info("==== CouponInfo API xml encTicket Setting Success ====")
             encTicket.text = encticket
 
-            element_add_item_coupon = root.find('soap:Body', self.namespace). \
-                find('base:AddItemCoupon', self.namespace). \
-                find('base:AddItemCoupon', self.namespace)
-
-            for key, value in self.add_item_coupon.items():
-                Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
+            # element_add_item_coupon = root.find('soap:Body', self.namespace). \
+            #     find('base:AddItemCoupon', self.namespace). \
+            #     find('base:AddItemCoupon', self.namespace)
+            #
+            # for key, value in self.add_item_coupon.items():
+            #     Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
 
             Logger.logger.info("==== CouponInfo API xml body setting Success ====")
 
