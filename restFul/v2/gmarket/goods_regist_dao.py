@@ -12,17 +12,7 @@ class GoodsRegistDao:
                                        "display_date, stock_qty, regist_user, shipping_group_code)" \
                                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-        self.insert_goods_query = "INSERT INTO b2c_goods (create_date, modify_date, out_item_no, category_code, " \
-                                  "item_no, item_name, gd_html, maker_no, expiration_date, price, default_image, " \
-                                  "large_image, small_image, auto_term_duration, auto_use_term_duration, " \
-                                  "use_information, help_desk_telno, apply_place, apply_place_url," \
-                                  "apply_place_telephone, display_date, stock_qty, regist_user, shipping_group_code)" \
-                                  "VALUES ({create_date}, {modify_date}, {out_item_no}, {category_code},{item_no}, " \
-                                  "{item_name}, {gd_html}, {maker_no}, {expiration_date}, {price}, {default_image}, " \
-                                  "{large_image}, {small_image}, {auto_term_duration}, {auto_use_term_duration}, " \
-                                  "{use_infomation}, {help_desk_telno}, {apply_place}, {apply_place_url}, " \
-                                  "{apply_place_telephone}, {display_date}, {stock_qty}, {regist_user}, " \
-                                  "{shipping_group_code})"
+
         # 조회
         self.query_select_goods_item_no = "SELECT * FROM b2c_goods WHERE " \
                                           "modify_date >= %s AND modify_date < %s " \
@@ -64,20 +54,26 @@ class GoodsRegistDao:
             Logger.logger.info(reference_price)
             Logger.logger.info(item_image)
             Logger.logger.info(shipping)
-            Logger.logger.info('[3]query format')
-            query = self.insert_goods_query.format(
-                create_date= today, modify_date= today, out_item_no=add_item.get('OutItemNo'),                              #AddItem
-                category_code=add_item.get('CategoryCode'), item_no=item_no, item_name = add_item.get('ItemName'),
-                gd_html= add_item.get('GdHtml'), maker_no= add_item.get('MakerNo'),
-                expiration_date= add_item.get('ExpirationDate'), price= reference_price.get('Price'),
-                default_image= item_image.get('DefaultImage'), large_image=item_image.get('LargeImage'),
-                small_image= item_image.get('SmallImage'), shipping_group_code = shipping.get('GroupCode') ,
-                auto_term_duration=None, auto_use_term_duration=None, use_infomation=None, help_desk_telno=None,            # AddItemCoupon
-                apply_place=None, apply_place_url=None,
-                apply_place_telephone=None, display_date=None, stock_qty=None,                                              # AddPrice
-                regist_user=user_id, )
-            Logger.logger.info(query)
-            db.executeQuery(query)
+
+            #     expiration_date= add_item.get('ExpirationDate'), price= reference_price.get('Price'),
+            #     default_image= item_image.get('DefaultImage'), large_image=item_image.get('LargeImage'),
+            #     small_image= item_image.get('SmallImage'), shipping_group_code = shipping.get('GroupCode') ,
+            #     auto_term_duration=None, auto_use_term_duration=None, use_infomation=None, help_desk_telno=None,            # AddItemCoupon
+            #     apply_place=None, apply_place_url=None,
+            #     apply_place_telephone=None, display_date=None, stock_qty=None,                                              # AddPrice
+            #     regist_user=user_id, )
+
+
+           # "auto_term_duration, auto_use_term_duration, use_information, help_desk_telno, apply_place, apply_place_url, apply_place_telephone," \
+           # "display_date, stock_qty, regist_user, shipping_group_code
+
+            db.executeQuery(self.query_insert_goods,
+                            (today, today, add_item.get('OutItemNo'), add_item.get('CategoryCode'), item_no,
+                             add_item.get('ItemName'), add_item.get('GdHtml'), add_item.get('MakerNo'),
+                             add_item.get('ExpirationDate'), reference_price.get('Price'), item_image.get('DefaultImage'),
+                             item_image.get('LargeImage'), item_image.get('SmallImage'), None, None, None, None, None, None, None,
+                             None, None, user_id, shipping.get('GroupCode'))
+                            )
 
     def selectGoods(self, start_date, end_date, item_no=None):
         db = MysqlDatabase()

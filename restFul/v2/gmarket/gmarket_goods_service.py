@@ -48,7 +48,12 @@ class GmarketGoodsService:
             try:
                 Logger.logger.info("==== AddItem API STEP4 Insert DB ====")
                 item_no = add_item_res_msg['GmktItemNo']
-                add_item_model.shipping['GroupCode'] = add_item_res_msg['ShippingGroupCode']
+
+                add_item_model.shipping['GroupCode'] = \
+                    add_item_res_msg.get('ShippingGroupCode') \
+                        if add_item_res_msg.get('ShippingGroupCode') is not None \
+                        else add_item_model.shipping.get('GroupCode')
+
                 GoodsRegistDao().insertGoods(item_no, add_item_model, user_id)
 
             except BaseException as e:
