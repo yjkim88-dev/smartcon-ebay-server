@@ -307,19 +307,20 @@ class CouponInfo:
             Logger.logger.info("==== CouponInfo API xml encTicket Setting Success ====")
             encTicket.text = encticket
 
-            # element_add_item_coupon = root.find('soap:Body', self.namespace). \
-            #     find('base:AddItemCoupon', self.namespace). \
-            #     find('base:AddItemCoupon', self.namespace)
-            #
-            # for key, value in self.add_item_coupon.items():
-            #     Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
+
+            element_add_item_coupon = root.find('soap:Body', self.namespace). \
+                find('base:AddItemCoupon', self.namespace). \
+                find('base:AddItemCoupon', self.namespace)
+
+            for key, value in self.add_item_coupon.items():
+                Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
 
             Logger.logger.info("==== CouponInfo API xml body setting Success ====")
 
         except BaseException as e:
             Logger.logger.info('CouponInfo Info create xml Failed')
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository.error_coupon_regist)
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
 
         result = ET.tostring(root, encoding='utf8', method='xml')
         Logger.logger.info("==== CouponInfo API xml Success ====")

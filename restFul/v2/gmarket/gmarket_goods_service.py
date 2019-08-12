@@ -133,7 +133,7 @@ class GmarketGoodsService:
             print(response.content.decode())
             Logger.logger.info(response.content.decode())
 
-            add_official_res_code, add_official_res_msg = gmarket_response('AddCouponInfo', response.content)
+            add_official_res_code, add_official_res_msg = gmarket_response('AddItemCoupon', response.content)
 
             if add_official_res_code != "00":
                 Logger.logger.info("====AddCouponInfo API SETEP3 FAILD ====")
