@@ -287,7 +287,8 @@ class CouponInfo:
             'PublicationCorp' : params.get('publication_corp'),
             'PublicationCorpWebUrl' : params.get('publication_corp_web_url'),
             'IsCustomerNameView' : params.get('is_customer_name_view', 'false'),
-            'IsCancel' : params.get('is_cancel', 'true')
+            'IsCancel' : params.get('is_cancel', 'true'),
+            'UseMobilePin': params.get('use_mobie_pin', 'false')
         }
 
     def set_xml(self):

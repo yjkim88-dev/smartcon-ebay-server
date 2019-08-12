@@ -120,14 +120,14 @@ class GmarketGoodsService:
             coupon_info_model = CouponInfo(params)
             coupon_info_xml = coupon_info_model.set_xml()
 
-            Logger.logger.info("===== AddCouponInfo API STEP2 REQUEST ====")
+            Logger.logger.info("===== AddCouponInfo API STEP2 REQUEST Task====")
             response = requests.post(
                 url=cls.api_url_add_item,
                 headers=cls.headers,
-                data=coupon_info_xml
+                data=coupon_info_xml,
             )
 
-            Logger.logger.info("REQUEST SUCCESS")
+            Logger.logger.info("REQUEST Task SUCCESS ")
 
             Logger.logger.info("===== AddCouponInfo API STEP3 RESPONSE PARSING ====")
             print(response.content.decode())
