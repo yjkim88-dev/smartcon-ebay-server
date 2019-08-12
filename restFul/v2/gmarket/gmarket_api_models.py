@@ -313,16 +313,18 @@ class CouponInfo:
 
             for key, value in self.add_item_coupon.items():
                 Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
+
             Logger.logger.info("==== CouponInfo API xml body setting Success ====")
+
         except BaseException as e:
             Logger.logger.info('CouponInfo Info create xml Failed')
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository.error_official_regist)
+            return Utils().makeResponse(StrRepository.error_coupon_regist)
 
         result = ET.tostring(root, encoding='utf8', method='xml')
         Logger.logger.info("==== CouponInfo API xml Success ====")
         Logger.logger.info(result.decode())
-        return result.decode().encode('utf-8', 'xmlcharrefreplace')
+        return result
 
 
 def gmarket_response(response_name, content):
