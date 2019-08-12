@@ -54,25 +54,21 @@ class GoodsRegistDao:
             Logger.logger.info(reference_price)
             Logger.logger.info(item_image)
             Logger.logger.info(shipping)
-
-            #     expiration_date= add_item.get('ExpirationDate'), price= reference_price.get('Price'),
-            #     default_image= item_image.get('DefaultImage'), large_image=item_image.get('LargeImage'),
-            #     small_image= item_image.get('SmallImage'), shipping_group_code = shipping.get('GroupCode') ,
             #     auto_term_duration=None, auto_use_term_duration=None, use_infomation=None, help_desk_telno=None,            # AddItemCoupon
             #     apply_place=None, apply_place_url=None,
             #     apply_place_telephone=None, display_date=None, stock_qty=None,                                              # AddPrice
             #     regist_user=user_id, )
 
-
-           # "auto_term_duration, auto_use_term_duration, use_information, help_desk_telno, apply_place, apply_place_url, apply_place_telephone," \
-           # "display_date, stock_qty, regist_user, shipping_group_code
-
+            # create_date, modify_date, out_item_no, category_code, item_no, item_name, " \
+            # gd_html, maker_no, expiration_date, price, default_image, large_image, small_image, " \
+            # auto_term_duration, auto_use_term_duration, use_information, help_desk_telno, apply_place, apply_place_url, apply_place_telephone, " \
+            # display_date, stock_qty, regist_user, shipping_group_code
             db.executeQuery(self.query_insert_goods,
-                            (today, today, add_item.get('OutItemNo'), add_item.get('CategoryCode'), item_no,
+                            today, today, add_item.get('OutItemNo'), add_item.get('CategoryCode'), item_no,
                              add_item.get('ItemName'), add_item.get('GdHtml'), add_item.get('MakerNo'),
                              add_item.get('ExpirationDate'), reference_price.get('Price'), item_image.get('DefaultImage'),
                              item_image.get('LargeImage'), item_image.get('SmallImage'), None, None, None, None, None, None, None,
-                             None, None, user_id, shipping.get('GroupCode'))
+                             None, None, user_id, shipping.get('GroupCode')
                             )
 
     def selectGoods(self, start_date, end_date, item_no=None):
