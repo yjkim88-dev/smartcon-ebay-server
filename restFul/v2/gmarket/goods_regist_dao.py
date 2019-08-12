@@ -3,6 +3,9 @@
 from B2C.DataBase import MysqlDatabase
 import datetime
 from Logger import Logger
+from restFul.utils import Utils
+from restFul.repository import StrRepository
+
 class GoodsRegistDao:
     def __init__(self):
         # 지마켓 상품등록
@@ -32,7 +35,35 @@ class GoodsRegistDao:
                                           "use_information = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s," \
                                           "apply_place_telephone = %s, display_date = %s, stock_qty = %s, regist_user = %s, shipping_group_code = %s " \
                                   "WHERE item_no = %s"
-        
+
+        self.query_update_goods_coupon_info = "UPDATE b2c_goods" \
+                                              "SET modify_date = %s, auto_term_duration = %s, auto_use_term_duration = %s" \
+                                              "use_infomation = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s" \
+                                              "apply_place_telephone = %s "\
+                                              "WHERE item_no = %s"
+
+    def update_goods_coupon_info(self, coupon_info):
+        Logger.logger.info('[0]Update goods coupon info start')
+
+        coupon_info = coupon_info.add_item_coupon
+        Logger.logger.info('[1]db connect')
+        db = MysqlDatabase()
+        goods = db.selectQuery(self.query_select_goods_item_no2, coupon_info.get('GmktItemNo'))
+        Logger.logger.info('db connect success')
+
+        Logger.logger.info(coupon_info)
+        Logger.logger.info('[2]update')
+        if(len(goods)>0):
+            today = datetime.datetime.now()
+            db.executeQuery(self.query_update_goods_coupon_info, today, coupon_info.get('AutoTermDuration'),
+                            coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
+                            coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'), coupon_info.get('ApplyPlaceUrl'),
+                            coupon_info.get('ApplyPlaceTelephone'))
+        else:
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        Logger.logger.info('[2]Update Goods Coupon Info Update Success')
+
     def insertGoods(self, item_no, add_item_model, user_id):
         Logger.logger.info('[0]insert goods start')
 
@@ -54,9 +85,7 @@ class GoodsRegistDao:
             Logger.logger.info(reference_price)
             Logger.logger.info(item_image)
             Logger.logger.info(shipping)
-            #     auto_term_duration=None, auto_use_term_duration=None, use_infomation=None, help_desk_telno=None,            # AddItemCoupon
-            #     apply_place=None, apply_place_url=None,
-            #     apply_place_telephone=None, display_date=None, stock_qty=None,                                              # AddPrice
+            #display_date=None, stock_qty=None,                                              # AddPrice
             #     regist_user=user_id, )
 
             # create_date, modify_date, out_item_no, category_code, item_no, item_name, " \

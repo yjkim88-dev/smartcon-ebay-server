@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Header>
+        <EncTicket xmlns="http://tpl.gmarket.co.kr/">
+            <encTicket>
+            </encTicket>
+        </EncTicket>
+    </soap:Header>
+    <soap:Body>
+        <AddItemCoupon xmlns="http://tpl.gmarket.co.kr/">
+            <AddItemCoupon/>
+        </AddItemCoupon>
+    </soap:Body>
+</soap:Envelope>

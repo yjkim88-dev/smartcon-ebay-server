@@ -254,6 +254,77 @@ class OfficialInfo:
 
         return result
 
+
+class CouponInfo:
+    namespace = {
+        'soap': "http://schemas.xmlsoap.org/soap/envelope/",
+        'base': "http://tpl.gmarket.co.kr/",
+        'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
+    }
+
+    def __init__(self, params):
+        self.add_item_coupon = {
+            'GmktItemNo' : str(params.get('item_no', '')),
+            'CouponType' : params.get('coupon_type', 'Mobile'),
+            'CouponMoneyType' : params.get('coupon_money_type', 'FixedAmount'),
+            'CouponMoney' : params.get('coupon_money', ''),
+            'ServiceName' : params.get('service_name', ''),
+            'CouponImageUrl' : params.get('default_image', ''),
+            'ValidTermType' : params.get('valid_term_type', 'AutoTerm'),
+            'AutoTermStartDay' : params.get('auto_term_start_day', '0'),
+            'AutoTermDuration' : params.get('auto_term_duration', ''),
+            'UseTermType' : params.get('user_term_type', 'AutoTerm'),
+            'AutoUseTermStartDay' : params.get('auto_use_term_start_day', '0'),
+            'AutoUseTermDuration' : params.get('auto_use_term_duration', ''),
+            'UseInformation' : params.get('use_infomation', ''),
+            'HelpDeskTelNo' : params.get('help_desk_telno', ''),
+            'ApplyPlace' : params.get('apply_place', ''),
+            'ApplyPlaceUrl': params.get('apply_place_url', ''),
+            'ApplyPlaceTelephone' : params.get('apply_place_telepheon', ''),
+            'AddBenefit' : params.get('add_bene_fit', ''),
+            'RestrictCondition' : params.get('restrict_condition', ''),
+            'FindGuide' : params.get('find_guide', ''),
+            'PublicationCorp' : params.get('publication_corp', ''),
+            'PublicationCorpWebUrl' : params.get('publication_corp_web_url', ''),
+            'IsCustomerNameView' : params.get('is_customer_name_view', 'false'),
+            'IsCancel' : params.get('is_cancel', 'true')
+        }
+
+    def set_xml(self):
+        try:
+            Logger.logger.info("==== CouponInfo model set xml Start ====")
+            Logger.logger.info("==== CouponInfo xml parsing ====")
+
+            tree = ET.parse(os.path.join(xml_path, "coupon_info.xml"))
+
+            root = tree.getroot()
+            Logger.logger.info("==== CouponInfo API xml parsing success====")
+
+            encTicket = root.find("soap:Header", self.namespace). \
+                find('base:EncTicket', self.namespace). \
+                find('base:encTicket', self.namespace)
+
+            Logger.logger.info("==== CouponInfo API xml encTicket Setting Success ====")
+            encTicket.text = encticket
+
+            element_add_item_coupon = root.find('soap:Body', self.namespace). \
+                find('base:AddItemCoupon', self.namespace). \
+                find('base:AddItemCoupon', self.namespace)
+
+            for key, value in self.add_item_coupon.items():
+                Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
+            Logger.logger.info("==== CouponInfo API xml body setting Success ====")
+        except BaseException as e:
+            Logger.logger.info('CouponInfo Info create xml Failed')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository.error_official_regist)
+
+        result = ET.tostring(root, encoding='utf8', method='xml')
+        Logger.logger.info("==== CouponInfo API xml Success ====")
+        Logger.logger.info(result.decode())
+        return result
+
+
 def gmarket_response(response_name, content):
     namespace = {
         'soap': "http://schemas.xmlsoap.org/soap/envelope/",

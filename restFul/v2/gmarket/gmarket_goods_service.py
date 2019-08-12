@@ -3,7 +3,7 @@ import requests
 
 from Logger import Logger
 from .goods_regist_dao import GoodsRegistDao
-from .gmarket_api_models import AddItem, OfficialInfo, gmarket_response
+from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, gmarket_response
 from restFul.repository import StrRepository
 from restFul.utils import Utils
 
@@ -17,6 +17,7 @@ class GmarketGoodsService:
         try:
             params['item_no'] = cls.add_gmarket_item(params)
             cls.add_gmarket_official_info(params)
+            cls.add_gmarket_coupon_info(params)
         except BaseException as e:
             Logger.logger.info(e)
             return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
@@ -81,7 +82,7 @@ class GmarketGoodsService:
             official_info_model = OfficialInfo(params)
             official_info_xml = official_info_model.set_xml()
 
-            Logger.logger.info("===== OfficialInfo API STEP2 REQUEST ====")
+            Logger.logger.info("===== AddOfficialInfo API STEP2 REQUEST ====")
             response = requests.post(
                 url=cls.api_url_add_item,
                 headers=cls.headers,
@@ -90,14 +91,14 @@ class GmarketGoodsService:
 
             Logger.logger.info("REQUEST SUCCESS")
 
-            Logger.logger.info("===== OfficialInfo API STEP3 RESPONSE PARSING ====")
+            Logger.logger.info("===== AddOfficialInfo API STEP3 RESPONSE PARSING ====")
             print(response.content.decode())
             Logger.logger.info(response.content.decode())
 
             add_official_res_code, add_official_res_msg = gmarket_response('AddOfficialInfo',response.content)
 
             if add_official_res_code != "00":
-                Logger.logger.info("====OfficialInfo API SETEP3 FAILD ====")
+                Logger.logger.info("====AddOfficialInfo API SETEP3 FAILD ====")
 
                 Logger.logger.info(html.escape(add_official_res_msg))
                 return Utils().makeResponse(StrRepository().error_official_regist)
@@ -108,6 +109,52 @@ class GmarketGoodsService:
         except BaseException as e:
             Logger.logger.info("====OfficialInfo API FAILD ====")
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_goods_regist)
+            return Utils().makeResponse(StrRepository().error_official_regist)
 
         Logger.logger.info("====OfficialInfo API Success ====")
+
+    @classmethod
+    def add_gmarket_coupon_info(cls, params):
+        Logger.logger.info("==== AddCouponInfo API Start")
+        try:
+            coupon_info_model = CouponInfo(params)
+            coupon_info_xml = coupon_info_model.set_xml()
+
+            Logger.logger.info("===== AddCouponInfo API STEP2 REQUEST ====")
+            response = requests.post(
+                url=cls.api_url_add_item,
+                headers=cls.headers,
+                data=coupon_info_xml
+            )
+
+            Logger.logger.info("REQUEST SUCCESS")
+
+            Logger.logger.info("===== AddCouponInfo API STEP3 RESPONSE PARSING ====")
+            print(response.content.decode())
+            Logger.logger.info(response.content.decode())
+
+            add_official_res_code, add_official_res_msg = gmarket_response('AddCouponInfo', response.content)
+
+            if add_official_res_code != "00":
+                Logger.logger.info("====AddCouponInfo API SETEP3 FAILD ====")
+
+                Logger.logger.info(html.escape(add_official_res_msg))
+                return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+            Logger.logger.info("==== AddCouponInfo SUCCESS ====")
+            Logger.logger.info(add_official_res_msg)
+
+            try:
+                Logger.logger.info("==== AddCouponInfo API STEP4 Insert DB ====")
+                GoodsRegistDao().update_goods_coupon_info(coupon_info_model)
+
+            except BaseException as e:
+                Logger.logger.info("==== AddCouponInfo API STEP4 Failed Insert DB ====")
+                Logger.logger.info(e)
+                return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        except BaseException as e:
+            Logger.logger.info("====AddCouponInfo API FAILD ====")
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
+
