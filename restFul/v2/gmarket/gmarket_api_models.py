@@ -232,7 +232,7 @@ class OfficialInfo:
                 return Utils().makeResponse(StrRepository().error_official_regist)
 
             for idx in range(len(sub_info_list)):
-                sub_info_list[idx].attrib['code'] = self.sub_info_list[idx].get('Code','')
+                sub_info_list[idx].attrib['Code'] = self.sub_info_list[idx].get('Code','')
                 sub_info_list[idx].attrib['AddYn'] = self.sub_info_list[idx].get('AddYn','')
                 sub_info_list[idx].attrib['AddValue'] = self.sub_info_list[idx].get('AddValue','')
 
