@@ -61,14 +61,14 @@ class GoodsRegistDao:
             shipping = add_item_model.shipping
 
             query = self.insert_goods_query.format(
-                create_date= today, modify_date= today, out_item_no=add_item.get('OutItemNo'),                      #AddItem
+                create_date= today, modify_date= today, out_item_no=add_item.get('OutItemNo'),                                #AddItem
                 category_code=add_item.get('CategoryCode'), item_no=item_no, item_name = add_item.get('ItemName'),
                 gd_html= add_item.get('GdHtml'), maker_no= add_item.get('MakerNo'),
                 expiration_date= add_item.get('ExpirationDate'), price= reference_price.get('Price'),
                 default_image= item_image.get('DefaultImage'), large_image=item_image.get('LargeImage'),
                 small_image= item_image.get('SmallImage'), shipping_group_code = shipping.get('GroupCode') ,
-                auto_term_duration='' , use_infomation='', help_desk_telno='', apply_place='', apply_place_url='',  # AddItemCoupon
-                apply_place_telephone='', display_date='', stock_qty='',                                            # AddPrice
+                auto_term_duration=None , use_infomation=None, help_desk_telno=None, apply_place=None, apply_place_url=None,  # AddItemCoupon
+                apply_place_telephone=None, display_date=None, stock_qty=None,                                                # AddPrice
                 regist_user=user_id, )
             db.executeQuery(query)
 
