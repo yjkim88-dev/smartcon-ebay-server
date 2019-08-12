@@ -179,20 +179,20 @@ class OfficialInfo:
         self.item_no = str(params.get('item_no', ''))
         self.group_code = params.get('GroupCode', '34')
         self.sub_info_list = [
-            {"Code": 34-1, "AddYn": 'Y', "AddValue": "(주)스마트콘" },
-            {"Code": 34-2, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
-            {"Code": 34-3, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
-            {"Code": 34-4, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
-            {"Code": 34-5, "AddYn": 'Y', "AddValue": "전액환불 불가" },
-            {"Code": 34-6, "AddYn": 'Y', "AddValue": "02-561-0671" },
-            {"Code": 34-7, "AddYn": 'Y', "AddValue": "구매후 10분이내" }
+            {"Code": '34-1', "AddYn": 'Y', "AddValue": "(주)스마트콘" },
+            {"Code": '34-2', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
+            {"Code": '34-3', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
+            {"Code": '34-4', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
+            {"Code": '34-5', "AddYn": 'Y', "AddValue": "전액환불 불가" },
+            {"Code": '34-6', "AddYn": 'Y', "AddValue": "02-561-0671" },
+            {"Code": '34-7', "AddYn": 'Y', "AddValue": "구매후 10분이내" }
         ]
 
         self.trade_info_list = [
-            {"Code": 999 - 1, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-            {"Code": 999 - 2, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-            {"Code": 999 - 3, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-            {"Code": 999 - 4, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": '999-1', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": '999-2', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": '999-3', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": '999-4', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
         ]
 
     def set_xml(self):
