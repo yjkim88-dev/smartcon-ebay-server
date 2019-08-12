@@ -2,7 +2,7 @@
 
 from B2C.DataBase import MysqlDatabase
 import datetime
-
+from Logger import Logger
 class GoodsRegistDao:
     def __init__(self):
         # 지마켓 상품등록
@@ -44,7 +44,7 @@ class GoodsRegistDao:
                                   "WHERE item_no = %s"
         
     def insertGoods(self, item_no, add_item_model, user_id):
-
+        Logger.logger.info('==insert goods==')
         db = MysqlDatabase()
         goods = db.selectQuery(self.query_select_goods_item_no2, item_no)
 
@@ -70,6 +70,7 @@ class GoodsRegistDao:
                 auto_term_duration=None , use_infomation=None, help_desk_telno=None, apply_place=None, apply_place_url=None,  # AddItemCoupon
                 apply_place_telephone=None, display_date=None, stock_qty=None,                                                # AddPrice
                 regist_user=user_id, )
+            Logger.logger.info(query)
             db.executeQuery(query)
 
     def selectGoods(self, start_date, end_date, item_no=None):
