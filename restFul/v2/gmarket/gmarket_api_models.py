@@ -5,7 +5,7 @@ import html
 from Logger import Logger
 from restFul.config import encticket
 from restFul.utils import Utils
-
+from restFul.repository import StrRepository
 xml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xmls')
 
 class AddItem:
@@ -157,17 +157,104 @@ class AddItem:
             for key, value in self.goods_kind.items():
                 Utils.set_xml_element_attrib(goods_kind, key, value)
 
-            result = ET.tostring(root ,encoding='utf8', method='xml')
-            code = "00"
+
         except Exception as e:
             Logger.logger.info(e)
-            code = "-1"
-            result = e
+            return Utils().makeResponse(StrRepository.error_goods_regist)
+        result = ET.tostring(root, encoding='utf8', method='xml')
 
-        return code, result
+        Logger.logger.info("==== AddItem API xml success ====")
+        Logger.logger.info(result)
+        return result
 
 
-def gmarket_response(content):
+class OfficialInfo:
+    namespace = {
+        'soap': "http://schemas.xmlsoap.org/soap/envelope/",
+        'base': "http://tpl.gmarket.co.kr/",
+        'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
+    }
+
+    def __init__(self, params):
+        self.item_no = params.get('item_no', '')
+        self.group_code = params.get('GroupCode', '34')
+        self.sub_info_list = [
+            {"Code": 34-1, "AddYn": 'Y', "AddValue": "(주)스마트콘" },
+            {"Code": 34-2, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
+            {"Code": 34-3, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
+            {"Code": 34-4, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
+            {"Code": 34-5, "AddYn": 'Y', "AddValue": "전액환불 불가" },
+            {"Code": 34-6, "AddYn": 'Y', "AddValue": "02-561-0671" },
+            {"Code": 34-7, "AddYn": 'Y', "AddValue": "구매후 10분이내" }
+        ]
+
+        self.trade_info_list = [
+            {"Code": 999 - 1, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": 999 - 2, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": 999 - 3, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+            {"Code": 999 - 4, "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+        ]
+
+    def set_xml(self):
+        try:
+            Logger.logger.info("==== OfficialInfo API xml create ====")
+            Logger.logger.info("==== OfficialInfo API xml parsing ====")
+            Logger.logger.info("==== OfficialInfo API xml parsing success====")
+            tree = ET.parse(os.path.join(xml_path, "official_info.xml"))
+            root = tree.getroot()
+
+            encTicket = root.find("soap:Header", self.namespace). \
+                find('base:EncTicket', self.namespace). \
+                find('base:encTicket', self.namespace)
+
+            Logger.logger.info("==== OfficialInfo API xml encTicket Setting Success ====")
+
+
+            encTicket.text = encticket
+
+            AddOfficialInfo = root.find('soap:Body', self.namespace). \
+                find('base:AddOfficialInfo', self.namespace). \
+                find('base:AddOfficialInfo', self.namespace)
+
+            AddOfficialInfo.attrib['GmktItemNo'] = self.item_no
+            AddOfficialInfo.attrib['GroupCode'] = self.group_code
+
+            sub_info_list = AddOfficialInfo.findall('xsd:SubInfoList', self.namespace)
+
+            trade_info_list = AddOfficialInfo.findall('xsd:TradeInfoList', self.namespace)
+
+            if len(sub_info_list) > len(self.sub_info_list):
+                Logger.logger.info('필요한 sub_info_list 요소보다 파라미터 sub_info_list 값이 적습니다.')
+                return Utils().makeResponse(StrRepository().error_official_regist)
+
+            if len(trade_info_list) > len(self.trade_info_list):
+                Logger.logger.info('필요한 trade_info_list 요소보다 파라미터 trade_info_list 값이 적습니다.')
+                return Utils().makeResponse(StrRepository().error_official_regist)
+
+            for idx in range(len(sub_info_list)):
+                sub_info_list[idx].attrib['code'] = self.sub_info_list[idx].get('Code','')
+                sub_info_list[idx].attrib['AddYn'] = self.sub_info_list[idx].get('AddYn','')
+                sub_info_list[idx].attrib['AddValue'] = self.sub_info_list[idx].get('AddValue','')
+
+            for idx in range(len(trade_info_list)):
+                trade_info_list[idx].attrib['Code'] = self.trade_info_list[idx].get('Code', '')
+                trade_info_list[idx].attrib['AddYn'] = self.trade_info_list[idx].get('AddYn', '')
+                trade_info_list[idx].attrib['AddValue'] = self.trade_info_list[idx].get('AddValue', '')
+
+            Logger.logger.info("==== OfficialInfo API xml body setting Success ====")
+        except BaseException as e:
+            Logger.logger.info('Official Info create xml Failed')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository.error_official_regist)
+
+        result = ET.tostring(root, encoding='utf8', method='xml')
+
+        Logger.logger.info("==== OfficialInfo API xml Success ====")
+        Logger.logger.info(result)
+
+        return result
+
+def gmarket_response(response_name, content):
     namespace = {
         'soap': "http://schemas.xmlsoap.org/soap/envelope/",
         'base': "http://tpl.gmarket.co.kr/",
@@ -178,7 +265,7 @@ def gmarket_response(content):
     fault = root.find('soap:Body', namespace).find('soap:Fault', namespace)
 
     if fault is None:
-        response = root.find('soap:Body', namespace).find('base:AddItemResponse', namespace).find('base:AddItemResult', namespace)
+        response = root.find('soap:Body', namespace).find('base:{}Response'.format(response_name), namespace).find('base:{}Result'.format(response_name), namespace)
         code = "00"
         result = response.attrib
     else:
