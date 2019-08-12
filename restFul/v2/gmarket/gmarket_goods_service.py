@@ -4,11 +4,26 @@ import requests
 from Logger import Logger
 from .goods_regist_dao import GoodsRegistDao
 from .gmarket_api_models import AddItem, gmarket_response
+from restFul.repository import StrRepository
+from restFul.utils import Utils
 
 
 class GmarketGoodsService:
     api_url_add_item = 'http://tpl.gmarket.co.kr/v1/ItemService.asmx'
     headers = {'Content-Type': 'text/xml; charset=utf-8'}
+
+    @classmethod
+    def postExcelGoods(cls, params):
+        try:
+            code, result = cls.AddItem(params)
+            if code != "00":
+                return  Utils().makeResponse((code, result))
+
+        except BaseException as e:
+            Logger.logger.info(e)
+            return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
+
+        return code, result
 
     @classmethod
     def AddItem(cls, params):
@@ -21,7 +36,7 @@ class GmarketGoodsService:
             Logger.logger.info("===== AddItem API STEP1 set XML ====")
             Logger.logger.info(add_item_result)
             if add_item_code != "00":
-                return -1, add_item_result
+                return Utils().makeResponse(StrRepository().error_goods_regist)
 
             Logger.logger.info("===== AddItem API STEP2 REQUEST ====")
             response = requests.post(
@@ -40,7 +55,7 @@ class GmarketGoodsService:
             if add_item_res_code != "00":
                 Logger.logger.info("====AddItem API SETEP3 FAILD ====")
                 Logger.logger.info(html.escape(add_item_res_msg))
-                return -1, add_item_res_msg
+                return Utils().makeResponse(StrRepository().error_goods_regist)
 
             Logger.logger.info("==== PARSING SUCCESS ====")
             Logger.logger.info(add_item_res_msg)
@@ -59,24 +74,10 @@ class GmarketGoodsService:
             except BaseException as e:
                 Logger.logger.info("==== AddItem API STEP4 Failed Insert DB ====")
                 Logger.logger.info(e)
-                pass
+                return Utils().makeResponse(StrRepository().error_goods_regist)
 
         except BaseException as e:
             Logger.logger.info(e)
-            return -1, "통신에러가 발생했습니다."
-        return code, result
-
-    @classmethod
-    def postExcelGoods(cls, params):
-        try:
-            code, result = cls.AddItem(params)
-            if code != "00":
-                return code, result
-            pass
-        except BaseException as e:
-            Logger.logger.info(e)
-            return "-1", "통신에러가 발생했습니다."
+            return Utils().makeResponse(StrRepository().error_goods_regist)
 
         return code, result
-
-

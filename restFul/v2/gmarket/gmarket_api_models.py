@@ -29,8 +29,8 @@ class AddItem:
             "ItemDescription": params.get('item_description'),
             "GdHtml": html.escape(params.get('gd_html')).replace('"', '&quot;') \
                 if params.get('gd_html') is not None else None,
-            "GdAddHtml": params.get('gd_add_html'),
-            "GdPrmtHtml": params.get('gd_prmt_html'),
+            "GdAddHtml": params.get('gd_add_html', ''),
+            "GdPrmtHtml": params.get('gd_prmt_html', ''),
             "MakerNo": params.get('maker_no'),
             "BrandNo": params.get('brand_no'),
             "ModelName": params.get('model_name'),

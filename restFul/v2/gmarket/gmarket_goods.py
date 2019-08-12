@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from flask import request
 from restFul.utils import Utils
+from restFul.repository import StrRepository
 from .gmarket_goods_service import GmarketGoodsService
 
 class GmarketGoods(Resource):
@@ -13,11 +14,11 @@ class GmarketGoods(Resource):
         params = request.json
 
         if post_type == "excel":
-            code, result = GmarketGoodsService.postExcelGoods(params)
+            GmarketGoodsService.postExcelGoods(params)
 
         if post_type == "goods":
             pass
-        return Utils().makeResponse(code, result)
+        return Utils().makeResponse(StrRepository().error_none)
 
 
         pass
