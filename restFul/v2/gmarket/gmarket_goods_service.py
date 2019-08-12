@@ -15,7 +15,7 @@ class GmarketGoodsService:
     @classmethod
     def postExcelGoods(cls, params):
         try:
-            params.item_no = cls.add_gmarket_item(params)
+            params['item_no'] = cls.add_gmarket_item(params)
             cls.add_gmarket_official_info(params)
         except BaseException as e:
             Logger.logger.info(e)
@@ -73,8 +73,10 @@ class GmarketGoodsService:
         Logger.logger.info("==== AddItem API Success ====")
 
         return item_no
+
     @classmethod
     def add_gmarket_official_info(cls, params):
+        Logger.logger.info("==== AddOfficialInfo API Start")
         try:
             official_info_model = OfficialInfo(params)
             official_info_xml = official_info_model.set_xml()
