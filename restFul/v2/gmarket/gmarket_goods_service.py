@@ -103,6 +103,11 @@ class GmarketGoodsService:
                 Logger.logger.info(html.escape(add_official_res_msg))
                 return Utils().makeResponse(StrRepository().error_official_regist)
 
+            if add_official_res_msg.get('Result') == 'Fail':
+                Logger.logger.info("====AddOfficialInfo API SETEP3 FAILD ====")
+                Logger.logger.info(html.escape(add_official_res_msg))
+                return Utils().makeResponse(StrRepository().error_official_regist)
+
             Logger.logger.info("==== PARSING SUCCESS ====")
             Logger.logger.info(add_official_res_msg)
 
@@ -133,16 +138,21 @@ class GmarketGoodsService:
             print(response.content.decode())
             Logger.logger.info(response.content.decode())
 
-            add_official_res_code, add_official_res_msg = gmarket_response('AddItemCoupon', response.content)
+            add_coupon_res_code, add_coupon_res_msg = gmarket_response('AddItemCoupon', response.content)
 
-            if add_official_res_code != "00":
+            if add_coupon_res_code != "00":
                 Logger.logger.info("====AddCouponInfo API SETEP3 FAILD ====")
 
-                Logger.logger.info(html.escape(add_official_res_msg))
+                Logger.logger.info(html.escape(add_coupon_res_msg))
+                return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+            if add_coupon_res_msg.get('Result') == 'Fail':
+                Logger.logger.info("====AddCouponInfo API SETEP3 FAILD ====")
+                Logger.logger.info(html.escape(add_coupon_res_msg.get('Comment')))
                 return Utils().makeResponse(StrRepository().error_coupon_regist)
 
             Logger.logger.info("==== AddCouponInfo SUCCESS ====")
-            Logger.logger.info(add_official_res_msg)
+            Logger.logger.info(add_coupon_res_msg)
 
             try:
                 Logger.logger.info("==== AddCouponInfo API STEP4 Insert DB ====")

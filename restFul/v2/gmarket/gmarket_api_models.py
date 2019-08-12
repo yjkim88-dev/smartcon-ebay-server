@@ -332,7 +332,7 @@ class CouponInfo:
             element_add_item_coupon.attrib['UseInformation'] = self.add_item_coupon.get('UseInformation')
             element_add_item_coupon.attrib['HelpDeskTelNo'] = self.add_item_coupon.get('HelpDeskTelNo')
             element_add_item_coupon.attrib['ApplyPlace'] = self.add_item_coupon.get('ApplyPlace')
-            
+            element_add_item_coupon.attrib['ApplyPlaceUrl'] = self.add_item_coupon.get('ApplyPlaceUrl')
             element_add_item_coupon.attrib['IsCustomerNameView'] = self.add_item_coupon.get('IsCustomerNameView')
 
             Logger.logger.info("==== CouponInfo API xml body setting Success ====")
