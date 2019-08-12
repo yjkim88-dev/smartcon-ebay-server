@@ -44,12 +44,12 @@ class GmarketGoodsService:
             try:
                 Logger.logger.info("==== SETEP1 AddItem Insert DB ====")
                 item_no = add_item_res_msg['GmktItemNo']
-                shipping_group_code = add_item_res_msg['ShippingGroupCode']
+                add_item_model.shipping['GroupCode'] = add_item_res_msg['ShippingGroupCode']
                 GoodsRegistDao().insertGoods(item_no, add_item_model, user_id)
 
-            except KeyError as key:
+            except BaseException as e:
                 Logger.logger.info("==== SETEP1 AddItem Insert DB Error====")
-                Logger.logger.info(key)
+                Logger.logger.info(e)
                 pass
 
         except BaseException as e:
