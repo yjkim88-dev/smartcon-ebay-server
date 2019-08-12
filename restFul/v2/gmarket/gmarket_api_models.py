@@ -322,7 +322,7 @@ class CouponInfo:
         result = ET.tostring(root, encoding='utf8', method='xml')
         Logger.logger.info("==== CouponInfo API xml Success ====")
         Logger.logger.info(result.decode())
-        return result
+        return result.encode('utf-8', 'xmlcharrefreplace')
 
 
 def gmarket_response(response_name, content):
