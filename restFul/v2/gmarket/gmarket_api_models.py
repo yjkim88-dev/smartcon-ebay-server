@@ -164,7 +164,7 @@ class AddItem:
         result = ET.tostring(root, encoding='utf8', method='xml')
 
         Logger.logger.info("==== AddItem API xml success ====")
-        Logger.logger.info(result)
+        Logger.logger.info(result.decode())
         return result
 
 
@@ -250,7 +250,7 @@ class OfficialInfo:
         result = ET.tostring(root, encoding='utf8', method='xml')
 
         Logger.logger.info("==== OfficialInfo API xml Success ====")
-        Logger.logger.info(result)
+        Logger.logger.info(result.decode())
 
         return result
 
