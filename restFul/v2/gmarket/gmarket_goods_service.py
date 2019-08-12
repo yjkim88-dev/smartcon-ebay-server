@@ -80,4 +80,6 @@ class GmarketGoodsService:
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_goods_regist)
 
+        Logger.logger.info("==== AddItem API Success ====")
+
         return code, result
