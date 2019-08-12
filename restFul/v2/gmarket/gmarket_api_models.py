@@ -288,7 +288,7 @@ class CouponInfo:
             'PublicationCorpWebUrl' : params.get('publication_corp_web_url'),
             'IsCustomerNameView' : params.get('is_customer_name_view', 'false'),
             'IsCancel' : params.get('is_cancel', 'true'),
-            'UseMobilePin': params.get('use_mobie_pin', 'false')
+            # 'UseMobilePin': params.get('use_mobie_pin', 'false')
         }
 
     def set_xml(self):
@@ -313,8 +313,26 @@ class CouponInfo:
                 find('base:AddItemCoupon', self.namespace). \
                 find('base:AddItemCoupon', self.namespace)
 
-            for key, value in self.add_item_coupon.items():
-                Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
+            # for key, value in self.add_item_coupon.items():
+            #     Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
+
+            element_add_item_coupon.attrib['GmktItemNo'] = self.add_item_coupon.get('GmktItemNo')
+            element_add_item_coupon.attrib['CouponType'] = self.add_item_coupon.get('CouponType')
+            element_add_item_coupon.attrib['CouponMoneyType'] = self.add_item_coupon.get('CouponMoneyType')
+            element_add_item_coupon.attrib['CouponMoney'] = self.add_item_coupon.get('CouponMoney')
+            element_add_item_coupon.attrib['ServiceName'] = self.add_item_coupon.get('ServiceName')
+            element_add_item_coupon.attrib['CouponImageUrl'] = self.add_item_coupon.get('CouponImageUrl')
+            element_add_item_coupon.attrib['ValidTermType'] = self.add_item_coupon.get('ValidTermType')
+            element_add_item_coupon.attrib['UseTermType'] = self.add_item_coupon.get('UseTermType')
+            element_add_item_coupon.attrib['AutoUseTermStartDay'] = self.add_item_coupon.get('AutoUseTermStartDay')
+            element_add_item_coupon.attrib['AutoTermDuration'] = self.add_item_coupon.get('AutoTermDuration')
+            element_add_item_coupon.attrib['UseTermType'] = self.add_item_coupon.get('UseTermType')
+            element_add_item_coupon.attrib['AutoUseTermStartDay'] = self.add_item_coupon.get('AutoUseTermStartDay')
+            element_add_item_coupon.attrib['AutoUseTermDuration'] = self.add_item_coupon.get('AutoUseTermDuration')
+            element_add_item_coupon.attrib['UseInformation'] = self.add_item_coupon.get('UseInformation')
+            element_add_item_coupon.attrib['HelpDeskTelNo'] = self.add_item_coupon.get('HelpDeskTelNo')
+            element_add_item_coupon.attrib['ApplyPlace'] = self.add_item_coupon.get('ApplyPlace')
+            element_add_item_coupon.attrib['IsCustomerNameView'] = self.add_item_coupon.get('IsCustomerNameView')
 
             Logger.logger.info("==== CouponInfo API xml body setting Success ====")
 
