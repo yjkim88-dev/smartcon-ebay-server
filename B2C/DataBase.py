@@ -19,13 +19,13 @@ class MysqlDatabase:
     def executeQuery(self, query, *argsa):
         try:
             self.connection()
-
             with self.conn.cursor() as cursor:
                 cursor.execute(query, argsa)
 
             self.conn.commit()
             print (cursor.lastrowid)
         except BaseException as e:
+            Logger.logger.info('==== Error executeQuery ====')
             Logger.logger.info(e)
             self.conn.rollback()
             self.conn.close()
