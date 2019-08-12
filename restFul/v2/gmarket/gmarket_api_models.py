@@ -176,7 +176,7 @@ class OfficialInfo:
     }
 
     def __init__(self, params):
-        self.item_no = params.get('item_no', '')
+        self.item_no = str(params.get('item_no', ''))
         self.group_code = params.get('GroupCode', '34')
         self.sub_info_list = [
             {"Code": 34-1, "AddYn": 'Y', "AddValue": "(주)스마트콘" },
