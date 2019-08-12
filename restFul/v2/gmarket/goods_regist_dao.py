@@ -44,22 +44,27 @@ class GoodsRegistDao:
                                   "WHERE item_no = %s"
         
     def insertGoods(self, item_no, add_item_model, user_id):
-        Logger.logger.info('==insert goods==')
+        Logger.logger.info('[0]insert goods start')
+
         db = MysqlDatabase()
         goods = db.selectQuery(self.query_select_goods_item_no2, item_no)
-
+        Logger.logger.info('[1]db connection clear')
         today = datetime.datetime.now()
-
         print (len(goods))
-
         if (len(goods) > 0):
+            Logger.logger.info('[2]update task...')
             print('update')
         else:
+            Logger.logger.info('[2]insert task...')
             add_item = add_item_model.add_item
             reference_price = add_item_model.reference_price
             item_image = add_item_model.item_image
             shipping = add_item_model.shipping
-
+            Logger.logger.info(add_item)
+            Logger.logger.info(reference_price)
+            Logger.logger.info(item_image)
+            Logger.logger.info(shipping)
+            Logger.logger.info('[3]query format')
             query = self.insert_goods_query.format(
                 create_date= today, modify_date= today, out_item_no=add_item.get('OutItemNo'),                                #AddItem
                 category_code=add_item.get('CategoryCode'), item_no=item_no, item_name = add_item.get('ItemName'),

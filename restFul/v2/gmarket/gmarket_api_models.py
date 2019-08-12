@@ -164,8 +164,6 @@ class AddItem:
             code = "-1"
             result = e
 
-        Logger.logger.info("====== STEP1 AddItem =====")
-        Logger.logger.info(result)
         return code, result
 
 
