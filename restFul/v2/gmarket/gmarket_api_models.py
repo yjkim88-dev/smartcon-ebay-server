@@ -16,10 +16,14 @@ class AddItem:
     }
 
     def __init__(self, params={}):
+        expiration_date = str(params.get('expiration_date'))
+        expiration_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
+                          expiration_date[6:]
+
         self.add_item = {
             "OutItemNo": params.get('out_item_no'),
             "CategoryCode": params.get('category_code'),
-            "GmktItemNo": params.get('gmkt_item_no'),
+            "GmktItemNo": params.get('item_no'),
             "ItemName": params.get('item_name'),
             "ItemEngName": params.get('item_eng_name'),
             "ItemDescription": params.get('item_description'),
@@ -33,7 +37,8 @@ class AddItem:
             "IsAdult": params.get('is_adult', "false"),
             "Tax": params.get('tax', "Free"),
             "FreeGift": params.get('free_gift'),
-            "ItemKind": params.get('item_kind', "Ecoupon")
+            "ItemKind": params.get('item_kind', "Ecoupon"),
+            "ExpirationDate": expiration_date
         }
 
         self.reference_price = {
@@ -173,9 +178,8 @@ def gmarket_response(content):
     tree = ET.ElementTree(ET.fromstring(content.decode()))
     root = tree.getroot()
     fault = root.find('soap:Body', namespace).find('soap:Fault', namespace)
-    fault_code = fault.find('faultcode')
 
-    if fault_code is None:
+    if fault is None:
         response = root.find('soap:Body', namespace).find('base:AddItemResponse', namespace).find('base:AddItemResult', namespace)
         code = "00"
         result = response.attrib

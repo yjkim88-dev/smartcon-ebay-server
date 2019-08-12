@@ -25,7 +25,7 @@ class MysqlDatabase:
 
             self.conn.commit()
             print (cursor.lastrowid)
-        except Exception as e:
+        except BaseException as e:
             Logger.logger.info(e)
             self.conn.rollback()
             self.conn.close()

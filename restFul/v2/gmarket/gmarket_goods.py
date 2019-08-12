@@ -10,12 +10,13 @@ class GmarketGoods(Resource):
 
     def post(self):
         post_type = request.values.get('type')
-        if post_type == "excel":
-            params = request.json
-            code, result = GmarketGoodsService.postGoodsBundle(params)
-            if code != "00":
-                return Utils().makeResponse((code, result))
+        params = request.json
 
+        if post_type == "excel":
+            code, result = GmarketGoodsService.postExcelGoods(params)
+
+        if post_type == "goods":
+            pass
         return Utils().makeResponse(code, result)
 
 
