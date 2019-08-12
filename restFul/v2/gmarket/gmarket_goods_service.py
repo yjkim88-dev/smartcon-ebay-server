@@ -16,7 +16,7 @@ class GmarketGoodsService:
         result = "성공적으로 등록되었습니다."
         try:
             add_item_model = AddItem(params)
-            user_id = params.get('userId')
+            user_id = params.get('user_id')
             add_item_code, add_item_result = add_item_model.set_xml()
             Logger.logger.info("===== AddItem API STEP1 set XML ====")
             Logger.logger.info(add_item_result)
