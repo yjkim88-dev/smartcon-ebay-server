@@ -19,7 +19,7 @@ class AddItem:
         expiration_date = str(params.get('expiration_date'))
         expiration_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
                           expiration_date[6:]
-
+        gd_html = html.escape(params.get('gd_html')) if params.get('gd_html') is not None else None
         self.add_item = {
             "OutItemNo": params.get('out_item_no'),
             "CategoryCode": params.get('category_code'),
@@ -27,8 +27,7 @@ class AddItem:
             "ItemName": params.get('item_name'),
             "ItemEngName": params.get('item_eng_name'),
             "ItemDescription": params.get('item_description'),
-            "GdHtml": html.escape(params.get('gd_html')).replace('"', '&quot;') \
-                if params.get('gd_html') is not None else None,
+            "GdHtml": gd_html.replace('"', '&quot;') if gd_html is not None else None,
             "GdAddHtml": params.get('gd_add_html', ''),
             "GdPrmtHtml": params.get('gd_prmt_html', ''),
             "MakerNo": params.get('maker_no'),
