@@ -263,6 +263,26 @@ class CouponInfo:
     }
 
     def __init__(self, params):
+        # ApplyPlaceTelephone = "02-561-0671"
+        # ApplyPlaceUrl = "pizzaalvolo.co.kr"
+        # AutoTermDuration = "7"
+        # AutoTermStartDay = "0"
+        # AutoUseTermDuration = "0"
+        # AutoUseTermStartDay = "0"
+        # CouponImageUrl = "http://www.giftsmartcon.com/shop/data/sum/pizzaalvolo_48.jpg"
+        # CouponMoney = "999999"
+        # CouponMoneyType = "FixedAmount"
+        # CouponType = "Mobile"
+        # FindGuide = "피자알볼로"
+        # GmktItemNo = "1656037225"
+        # HelpDeskTelNo = "02-561-0749"
+        # IsCancel = "true"
+        # IsCustomerNameView = "false"
+        # PublicationCorp = "스마트콘"
+        # ServiceName = "TEST2019"
+        # UseInformation = "상세페이지확인"
+        # UseTermType = "AutoTerm"
+        # ValidTermType = "AutoTerm"
         self.add_item_coupon = {
             'GmktItemNo' : str(params.get('item_no', '')),
             'CouponType' : params.get('coupon_type', 'Mobile'),
@@ -281,11 +301,11 @@ class CouponInfo:
             'ApplyPlace' : params.get('apply_place', ''),
             'ApplyPlaceUrl': params.get('apply_place_url', ''),
             'ApplyPlaceTelephone' : params.get('apply_place_telephone', ''),
-            'AddBenefit' : params.get('add_bene_fit'),
-            'RestrictCondition' : params.get('restrict_condition'),
+            'AddBenefit' : params.get('add_bene_fit', ''),
+            'RestrictCondition' : params.get('restrict_condition', ''),
             'FindGuide' : params.get('find_guide'),
             'PublicationCorp' : params.get('publication_corp'),
-            'PublicationCorpWebUrl' : params.get('publication_corp_web_url'),
+            'PublicationCorpWebUrl' : params.get('publication_corp_web_url', ''),
             'IsCustomerNameView' : params.get('is_customer_name_view', 'false'),
             'IsCancel' : params.get('is_cancel', 'true'),
             # 'UseMobilePin': params.get('use_mobie_pin', 'false')

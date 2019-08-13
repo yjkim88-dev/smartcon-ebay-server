@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Header>
         <EncTicket xmlns="http://tpl.gmarket.co.kr/">
             <encTicket>
             </encTicket>
         </EncTicket>
     </soap:Header>
-     <soap:Body>
-     <AddItemCoupon xmlns="http://tpl.gmarket.co.kr/">
-       <AddItemCoupon GmktItemNo="1655795637" CouponType="Mobile" CouponMoneyType="FixedAmount"
-            CouponMoney="999999" ServiceName="TEST2019" CouponImageUrl="http://www.giftsmartcon.com/shop/data/sum/pizzaalvolo_48.jpg" ValidTermType="AutoTerm"
-            AutoTermStartDay="0" AutoTermDuration="7" UseTermType="AutoTerm" AutoUseTermStartDay="0"
-            AutoUseTermDuration="0" UseInformation="상세페이지확인" HelpDeskTelNo="02-561-0749" ApplyPlace="TEST"
-            ApplyPlaceUrl="pizzaalvolo.co.kr" ApplyPlaceTelephone="02-561-0671" AddBenefit="" RestrictCondition=""
-            FindGuide="피자알볼로" PublicationCorp="스마트콘" PublicationCorpWebUrl="" IsCustomerNameView="false"
-            IsCancel="true"/>
-     </AddItemCoupon>
- </soap:Body>
- </soap:Envelope>
+    <soap:Body>
+        <AddItemCoupon xmlns="http://tpl.gmarket.co.kr/">
+            <AddItemCoupon />
+        </AddItemCoupon>
+    </soap:Body>
+</soap:Envelope>
