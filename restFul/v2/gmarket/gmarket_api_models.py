@@ -337,10 +337,17 @@ class PriceInfo:
 
     def __init__(self, params):
         display_date = None
-        if params.get('expiration_date') is not None:
-            display_date = params.get('expiration_date')[:4] + '-' + params.get('expiration_date')[4:6] + '-' + \
-                params.get('expiration_date')[6:]
+        Logger.logger.info('set PriceInfo')
+        Logger.logger.info(params)
+        try:
+            if params.get('expiration_date') is not None:
+                expiration_date = str(params.get('expiration_date'))
+                display_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
+                                  expiration_date[6:]
 
+        except BaseException as e:
+            Logger.logger.info('set PriceInfo Failed')
+            Logger.logger.info(e)
 
         self.add_price = {
             'GmktItemNo' : params.get('item_no'),

@@ -35,7 +35,7 @@ class GmarketGoodsService:
             result = cls.add_gmarket_premium_info(params)
             if result.get('errorCode') != "00":
                 return result
-            
+
         except BaseException as e:
             Logger.logger.info(e)
             return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
@@ -203,7 +203,8 @@ class GmarketGoodsService:
 
     @classmethod
     def add_gmarket_price_info(cls, params):
-        Logger.logger.info("==== AddPriceInfo API Start")
+        Logger.logger.info("==============================")
+        Logger.logger.info("==== AddPriceInfo API Start===")
         try:
             price_info_model = PriceInfo(params)
             price_xml_result = price_info_model.set_xml()
