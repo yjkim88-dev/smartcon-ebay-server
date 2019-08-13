@@ -61,7 +61,7 @@ class GoodsRegistDao:
         if (len(goods) > 0):
             today = datetime.datetime.now()
 
-            db.executeQuery(self.query_update_goods_coupon_info, today, price_info.get('DisplayDate'),
+            db.executeQuery(self.query_update_goods_price_info, today, price_info.get('DisplayDate'),
                             price_info.get('stock_qty'), price_info.get('GmktItemNo'))
         else:
             return Utils().makeResponse(StrRepository().error_coupon_regist)
