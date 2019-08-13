@@ -3,7 +3,7 @@ import requests
 
 from Logger import Logger
 from .goods_regist_dao import GoodsRegistDao
-from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, gmarket_response
+from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, PriceInfo, gmarket_response
 from restFul.repository import StrRepository
 from restFul.utils import Utils
 
@@ -31,7 +31,7 @@ class GmarketGoodsService:
             result = cls.add_gmarket_price_info(params)
             if result.get('errorCode') != "00":
                 return result
-            
+
         except BaseException as e:
             Logger.logger.info(e)
             return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
@@ -201,7 +201,7 @@ class GmarketGoodsService:
     def add_gmarket_price_info(cls, params):
         Logger.logger.info("==== AddPriceInfo API Start")
         try:
-            price_info_model = CouponInfo(params)
+            price_info_model = PriceInfo(params)
             price_xml_result = price_info_model.set_xml()
 
             if price_xml_result.get('errorCode') != "00":
