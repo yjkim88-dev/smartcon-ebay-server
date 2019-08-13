@@ -192,3 +192,59 @@ class GmarketGoodsService:
             return Utils().makeResponse(StrRepository().error_coupon_regist)
 
         return Utils().makeResponse(StrRepository().error_none)
+
+    @classmethod
+    def add_gmarket_price_info(cls, params):
+        Logger.logger.info("==== AddPriceInfo API Start")
+        try:
+            price_info_model = CouponInfo(params)
+            price_xml_result = price_info_model.set_xml()
+
+            if price_xml_result.get('errorCode') != "00":
+                return price_xml_result
+
+            Logger.logger.info("===== AddPriceInfo API STEP2 REQUEST Task====")
+
+            response = requests.post(
+                url=cls.api_url_add_item,
+                headers=cls.headers,
+                data=price_xml_result.get('results')
+            )
+
+            Logger.logger.info("REQUEST Task SUCCESS ")
+
+            Logger.logger.info("===== AddPriceInfo API STEP3 RESPONSE PARSING ====")
+            print(response.content.decode())
+            Logger.logger.info(response.content.decode())
+
+            add_coupon_res_code, add_coupon_res_msg = gmarket_response('AddPrice', response.content)
+
+            if add_coupon_res_code != "00":
+                Logger.logger.info("====AddPriceInfo API SETEP3 FAILD ====")
+
+                Logger.logger.info(html.escape(add_coupon_res_msg))
+                return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+            if add_coupon_res_msg.get('Result') == 'Fail':
+                Logger.logger.info("====AddPriceInfo API SETEP3 FAILD ====")
+                Logger.logger.info(html.escape(add_coupon_res_msg.get('Comment')))
+                return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+            Logger.logger.info("==== AddPriceInfo SUCCESS ====")
+            Logger.logger.info(add_coupon_res_msg)
+
+            try:
+                Logger.logger.info("==== AddPriceInfo API STEP4 Insert DB ====")
+                GoodsRegistDao().update_goods_price_info(price_info_model)
+
+            except BaseException as e:
+                Logger.logger.info("==== AddPriceInfo API STEP4 Failed Insert DB ====")
+                Logger.logger.info(e)
+                return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        except BaseException as e:
+            Logger.logger.info("====AddPriceInfo API FAILD ====")
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        return Utils().makeResponse(StrRepository().error_none)

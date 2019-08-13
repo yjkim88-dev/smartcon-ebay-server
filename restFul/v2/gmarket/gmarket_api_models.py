@@ -263,26 +263,6 @@ class CouponInfo:
     }
 
     def __init__(self, params):
-        # ApplyPlaceTelephone = "02-561-0671"
-        # ApplyPlaceUrl = "pizzaalvolo.co.kr"
-        # AutoTermDuration = "7"
-        # AutoTermStartDay = "0"
-        # AutoUseTermDuration = "0"
-        # AutoUseTermStartDay = "0"
-        # CouponImageUrl = "http://www.giftsmartcon.com/shop/data/sum/pizzaalvolo_48.jpg"
-        # CouponMoney = "999999"
-        # CouponMoneyType = "FixedAmount"
-        # CouponType = "Mobile"
-        # FindGuide = "피자알볼로"
-        # GmktItemNo = "1656037225"
-        # HelpDeskTelNo = "02-561-0749"
-        # IsCancel = "true"
-        # IsCustomerNameView = "false"
-        # PublicationCorp = "스마트콘"
-        # ServiceName = "TEST2019"
-        # UseInformation = "상세페이지확인"
-        # UseTermType = "AutoTerm"
-        # ValidTermType = "AutoTerm"
         self.add_item_coupon = {
             'GmktItemNo' : str(params.get('item_no', '')),
             'CouponType' : params.get('coupon_type', 'Mobile'),
@@ -336,25 +316,6 @@ class CouponInfo:
             for key, value in self.add_item_coupon.items():
                 Utils.set_xml_element_attrib(element_add_item_coupon, key, value)
 
-            # element_add_item_coupon.attrib['GmktItemNo'] = self.add_item_coupon.get('GmktItemNo')
-            # element_add_item_coupon.attrib['CouponType'] = self.add_item_coupon.get('CouponType')
-            # element_add_item_coupon.attrib['CouponMoneyType'] = self.add_item_coupon.get('CouponMoneyType')
-            # element_add_item_coupon.attrib['CouponMoney'] = self.add_item_coupon.get('CouponMoney')
-            # element_add_item_coupon.attrib['ServiceName'] = self.add_item_coupon.get('ServiceName')
-            # element_add_item_coupon.attrib['CouponImageUrl'] = self.add_item_coupon.get('CouponImageUrl')
-            # element_add_item_coupon.attrib['ValidTermType'] = self.add_item_coupon.get('ValidTermType')
-            # element_add_item_coupon.attrib['UseTermType'] = self.add_item_coupon.get('UseTermType')
-            # element_add_item_coupon.attrib['AutoUseTermStartDay'] = self.add_item_coupon.get('AutoUseTermStartDay')
-            # element_add_item_coupon.attrib['AutoTermDuration'] = self.add_item_coupon.get('AutoTermDuration')
-            # element_add_item_coupon.attrib['UseTermType'] = self.add_item_coupon.get('UseTermType')
-            # element_add_item_coupon.attrib['AutoUseTermStartDay'] = self.add_item_coupon.get('AutoUseTermStartDay')
-            # element_add_item_coupon.attrib['AutoUseTermDuration'] = self.add_item_coupon.get('AutoUseTermDuration')
-            # element_add_item_coupon.attrib['UseInformation'] = self.add_item_coupon.get('UseInformation')
-            # element_add_item_coupon.attrib['HelpDeskTelNo'] = self.add_item_coupon.get('HelpDeskTelNo')
-            # element_add_item_coupon.attrib['ApplyPlace'] = self.add_item_coupon.get('ApplyPlace')
-            # element_add_item_coupon.attrib['ApplyPlaceUrl'] = self.add_item_coupon.get('ApplyPlaceUrl')
-            # element_add_item_coupon.attrib['IsCustomerNameView'] = self.add_item_coupon.get('IsCustomerNameView')
-
             Logger.logger.info("==== CouponInfo API xml body setting Success ====")
 
         except BaseException as e:
@@ -364,6 +325,59 @@ class CouponInfo:
 
         result = ET.tostring(root, encoding='utf8', method='xml')
         Logger.logger.info("==== CouponInfo API xml Success ====")
+        Logger.logger.info(result.decode())
+        return Utils().makeResponse(StrRepository().error_none, result)
+
+
+class PriceInfo:
+    namespace = {
+        'soap': "http://schemas.xmlsoap.org/soap/envelope/",
+        'base': "http://tpl.gmarket.co.kr/",
+        'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
+    }
+
+    def __init__(self, params):
+        self.add_price = {
+            'GmktItemNo' : params.get('item_no'),
+            'DisplayDate' : params.get('expiration_date'),
+            'StockQty' : params.get('stock_qty'),
+            'SellPrice' : params.get('price')
+        }
+
+    def set_xml(self):
+        try:
+            Logger.logger.info("==== PriceInfo model set xml Start ====")
+            Logger.logger.info("==== PriceInfo xml parsing ====")
+
+            tree = ET.parse(os.path.join(xml_path, "price_info.xml"))
+
+            root = tree.getroot()
+            Logger.logger.info("==== PriceInfo API xml parsing success====")
+
+            encTicket = root.find("soap:Header", self.namespace). \
+                find('base:EncTicket', self.namespace). \
+                find('base:encTicket', self.namespace)
+
+            Logger.logger.info("==== PriceInfo API xml encTicket Setting Success ====")
+            encTicket.text = encticket
+
+            element_add_price = root.find('soap:Body', self.namespace). \
+                find('base:AddItemCoupon', self.namespace). \
+                find('base:AddPrice', self.namespace). \
+                find('base:AddPrice', self.namespace)
+
+            for key, value in self.add_price.items():
+                Utils.set_xml_element_attrib(element_add_price, key, value)
+
+            Logger.logger.info("==== PriceInfo API xml body setting Success ====")
+
+        except BaseException as e:
+            Logger.logger.info('PriceInfo Info create xml Failed')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        result = ET.tostring(root, encoding='utf8', method='xml')
+        Logger.logger.info("==== PriceInfo API xml Success ====")
         Logger.logger.info(result.decode())
         return Utils().makeResponse(StrRepository().error_none, result)
 

@@ -42,6 +42,32 @@ class GoodsRegistDao:
                                               "apply_place_telephone = %s " \
                                               "WHERE item_no = %s"
 
+        self.query_update_goods_price_info  = "UPDATE b2c_goods " \
+                                              "SET modify_date = %s, display_date = %s, stock_qty = %s " \
+                                              "WHERE item_no = %s"
+
+    def update_goods_price_info(self, price_info):
+        Logger.logger.info('[0]Update goods price info start')
+
+        price_info = price_info.add_price
+        Logger.logger.info('[1]db connect')
+        db = MysqlDatabase()
+        goods = db.selectQuery(self.query_select_goods_item_no2, price_info.get('GmktItemNo'))
+        Logger.logger.info('db connect success')
+
+        Logger.logger.info(price_info)
+        Logger.logger.info('[2]update')
+
+        if (len(goods) > 0):
+            today = datetime.datetime.now()
+
+            db.executeQuery(self.query_update_goods_coupon_info, today, price_info.get('DisplayDate'),
+                            price_info.get('stock_qty'), price_info.get('GmktItemNo'))
+        else:
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        Logger.logger.info('[2]Update Goods price Info Update Success')
+
     def update_goods_coupon_info(self, coupon_info):
         Logger.logger.info('[0]Update goods coupon info start')
 
