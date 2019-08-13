@@ -7,10 +7,8 @@
         </EncTicket>
     </soap:Header>
     <soap:Body>
-        <AddItemCoupon xmlns="http://tpl.gmarket.co.kr/">
-            <AddPrice xmlns="http://tpl.gmarket.co.kr/">
-                <AddPrice />
-            </AddPrice>
-        </AddItemCoupon>
+        <AddPrice xmlns="http://tpl.gmarket.co.kr/">
+            <AddPrice />
+        </AddPrice>
     </soap:Body>
 </soap:Envelope>

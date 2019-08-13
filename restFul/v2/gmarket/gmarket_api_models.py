@@ -368,7 +368,6 @@ class PriceInfo:
             encTicket.text = encticket
 
             element_add_price = root.find('soap:Body', self.namespace). \
-                find('base:AddItemCoupon', self.namespace). \
                 find('base:AddPrice', self.namespace). \
                 find('base:AddPrice', self.namespace)
 
