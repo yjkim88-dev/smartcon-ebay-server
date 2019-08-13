@@ -32,6 +32,10 @@ class GmarketGoodsService:
             if result.get('errorCode') != "00":
                 return result
 
+            result = cls.add_gmarket_premium_info(params)
+            if result.get('errorCode') != "00":
+                return result
+            
         except BaseException as e:
             Logger.logger.info(e)
             return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
