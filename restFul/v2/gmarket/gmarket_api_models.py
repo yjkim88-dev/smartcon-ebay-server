@@ -417,7 +417,7 @@ class PremiumInfo:
                 find('base:AddPremiumItem', self.namespace). \
                 find('base:AddPremiumItem', self.namespace)
 
-            element_premium.attrib['GmkItemNo'] = self.item_no
+            element_premium.attrib['GmktItemNo'] = self.item_no
 
             Logger.logger.info("==== PremiumInfo API xml body setting Success ====")
 
