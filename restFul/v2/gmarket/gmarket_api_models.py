@@ -401,7 +401,7 @@ class PremiumInfo:
             Logger.logger.info("==== PremiumInfo model set xml Start ====")
             Logger.logger.info("==== PremiumInfo xml parsing ====")
 
-            tree = ET.parse(os.path.join(xml_path, "price_info.xml"))
+            tree = ET.parse(os.path.join(xml_path, "premium_info.xml"))
 
             root = tree.getroot()
             Logger.logger.info("==== PremiumInfo API xml parsing success====")

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Header>
+        <EncTicket xmlns="http://tpl.gmarket.co.kr/">
+            <encTicket>
+            </encTicket>
+        </EncTicket>
+    </soap:Header>
+    <soap:Body>
+        <AddPremiumItem xmlns="http://tpl.gmarket.co.kr/">
+            <AddPremiumItem GmktItemNo="%s">
+                <Discount xmlns="http://tpl.gmarket.co.kr/tpl.xsd">
+                    <DiscountDate/>
+                </Discount>
+                <Mileage xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
+                <BundleDiscount xmlns="http://tpl.gmarket.co.kr/tpl.xsd">
+                    <BundleDiscountDate/>
+                    <MultiplePurchaseDiscount/>
+                    <NPlusOneBonusDiscount/>
+                </BundleDiscount>
+            </AddPremiumItem>
+        </AddPremiumItem>
+    </soap:Body>
+</soap:Envelope>
