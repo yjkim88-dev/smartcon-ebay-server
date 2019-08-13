@@ -19,7 +19,7 @@ class AddItem:
         expiration_date = str(params.get('expiration_date'))
         expiration_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
                           expiration_date[6:]
-        gd_html = html.escape(params.get('gd_html')) if params.get('gd_html') is not None else None
+
         self.add_item = {
             "OutItemNo": params.get('out_item_no'),
             "CategoryCode": params.get('category_code'),
@@ -384,6 +384,53 @@ class PriceInfo:
         Logger.logger.info("==== PriceInfo API xml Success ====")
         Logger.logger.info(result.decode())
         return Utils().makeResponse(StrRepository().error_none, result)
+
+
+class PremiumInfo:
+    namespace = {
+        'soap': "http://schemas.xmlsoap.org/soap/envelope/",
+        'base': "http://tpl.gmarket.co.kr/",
+        'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
+    }
+
+    def __init__(self, params):
+        self.item_no = params.get('item_no')
+
+    def set_xml(self):
+        try:
+            Logger.logger.info("==== PremiumInfo model set xml Start ====")
+            Logger.logger.info("==== PremiumInfo xml parsing ====")
+
+            tree = ET.parse(os.path.join(xml_path, "price_info.xml"))
+
+            root = tree.getroot()
+            Logger.logger.info("==== PremiumInfo API xml parsing success====")
+
+            encTicket = root.find("soap:Header", self.namespace). \
+                find('base:EncTicket', self.namespace). \
+                find('base:encTicket', self.namespace)
+
+            Logger.logger.info("==== PremiumInfo API xml encTicket Setting Success ====")
+            encTicket.text = encticket
+
+            element_premium = root.find('soap:Body', self.namespace). \
+                find('base:AddPremiumItem', self.namespace). \
+                find('base:AddPremiumItem', self.namespace)
+
+            element_premium.attrib['GmkItemNo'] = self.item_no
+
+            Logger.logger.info("==== PremiumInfo API xml body setting Success ====")
+
+        except BaseException as e:
+            Logger.logger.info('PremiumInfo Info create xml Failed')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_premium_regist)
+
+        result = ET.tostring(root, encoding='utf8', method='xml')
+        Logger.logger.info("==== PremiumInfo API xml Success ====")
+        Logger.logger.info(result.decode())
+        return Utils().makeResponse(StrRepository().error_none, result)
+
 
 
 def gmarket_response(response_name, content):

@@ -3,7 +3,7 @@ import requests
 
 from Logger import Logger
 from .goods_regist_dao import GoodsRegistDao
-from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, PriceInfo, gmarket_response
+from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, PriceInfo, PremiumInfo, gmarket_response
 from restFul.repository import StrRepository
 from restFul.utils import Utils
 
@@ -250,5 +250,52 @@ class GmarketGoodsService:
             Logger.logger.info("====AddPriceInfo API FAILD ====")
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_price_regist)
+
+        return Utils().makeResponse(StrRepository().error_none)
+
+    @classmethod
+    def add_gmarket_premium_info(cls, params):
+        Logger.logger.info("==== AddPremium API Start")
+        try:
+            premium_info_model = PremiumInfo(params)
+            premium_xml_result = premium_info_model.set_xml()
+
+            if premium_xml_result.get('errorCode') != "00":
+                return premium_xml_result
+
+            Logger.logger.info("===== AddPremium API STEP2 REQUEST Task====")
+
+            response = requests.post(
+                url=cls.api_url_add_item,
+                headers=cls.headers,
+                data=premium_xml_result.get('results')
+            )
+
+            Logger.logger.info("REQUEST Task SUCCESS ")
+
+            Logger.logger.info("===== AddPremium API STEP3 RESPONSE PARSING ====")
+            print(response.content.decode())
+            Logger.logger.info(response.content.decode())
+
+            add_premium_res_code, add_premium_res_msg = gmarket_response('AddPremiumItem', response.content)
+
+            if add_premium_res_code != "00":
+                Logger.logger.info("====AddPremium API SETEP3 FAILD ====")
+
+                Logger.logger.info(html.escape(add_premium_res_msg))
+                return Utils().makeResponse(StrRepository().error_premium_regist)
+
+            if add_premium_res_msg.get('Result') == 'Fail':
+                Logger.logger.info("====AddPremium API SETEP3 FAILD ====")
+                Logger.logger.info(html.escape(add_premium_res_msg.get('Comment')))
+                return Utils().makeResponse(StrRepository().error_premium_regist)
+
+            Logger.logger.info("==== AddPremium SUCCESS ====")
+            Logger.logger.info(add_premium_res_msg)
+
+        except BaseException as e:
+            Logger.logger.info("====AddPriceInfo API FAILD ====")
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_premium_regist)
 
         return Utils().makeResponse(StrRepository().error_none)
