@@ -36,10 +36,10 @@ class GoodsRegistDao:
                                           "apply_place_telephone = %s, display_date = %s, stock_qty = %s, regist_user = %s, shipping_group_code = %s " \
                                   "WHERE item_no = %s"
 
-        self.query_update_goods_coupon_info = "UPDATE b2c_goods" \
+        self.query_update_goods_coupon_info = "UPDATE b2c_goods " \
                                               "SET modify_date = %s, auto_term_duration = %s, auto_use_term_duration = %s" \
-                                              "use_infomation = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s" \
-                                              "apply_place_telephone = %s "\
+                                              "use_infomation = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s, " \
+                                              "apply_place_telephone = %s " \
                                               "WHERE item_no = %s"
 
     def update_goods_coupon_info(self, coupon_info):
