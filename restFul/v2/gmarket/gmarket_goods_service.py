@@ -15,25 +15,40 @@ class GmarketGoodsService:
     @classmethod
     def postExcelGoods(cls, params):
         try:
-            params['item_no'] = cls.add_gmarket_item(params)
-            cls.add_gmarket_official_info(params)
-            cls.add_gmarket_coupon_info(params)
+            result = cls.add_gmarket_item(params)
+            if result.get('errorCode') != "00":
+                return result
+
+            params['item_no'] = result.get('results')
+            result = cls.add_gmarket_official_info(params)
+            if result.get('errorCode') != "00":
+                return result
+
+            result = cls.add_gmarket_coupon_info(params)
+            if result.get('errorCode') != "00":
+                return result
+
         except BaseException as e:
             Logger.logger.info(e)
             return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
+        return Utils().makeResponse(StrRepository().error_none)
 
     @classmethod
     def add_gmarket_item(cls, params):
         try:
             add_item_model = AddItem(params)
             user_id = params.get('user_id')
-            add_item_xml = add_item_model.set_xml()
+            xml_result = add_item_model.set_xml()
+
+            if xml_result.get('errorCode') != '00':
+                return Utils().makeResponse(StrRepository().error_goods_regist)
 
             Logger.logger.info("===== AddItem API STEP2 REQUEST ====")
+
             response = requests.post(
                 url=cls.api_url_add_item,
                 headers=cls.headers,
-                data=add_item_xml
+                data=xml_result.get('results')
             )
             Logger.logger.info("REQUEST SUCCESS")
 
@@ -73,20 +88,23 @@ class GmarketGoodsService:
 
         Logger.logger.info("==== AddItem API Success ====")
 
-        return item_no
+        return Utils().makeResponse(StrRepository().error_none, item_no)
 
     @classmethod
     def add_gmarket_official_info(cls, params):
         Logger.logger.info("==== AddOfficialInfo API Start")
         try:
             official_info_model = OfficialInfo(params)
-            official_info_xml = official_info_model.set_xml()
+            official_xml_result = official_info_model.set_xml()
+
+            if official_xml_result.get('errorCode') != "00":
+                return official_xml_result
 
             Logger.logger.info("===== AddOfficialInfo API STEP2 REQUEST ====")
             response = requests.post(
                 url=cls.api_url_add_item,
                 headers=cls.headers,
-                data=official_info_xml
+                data=official_xml_result.get('results')
             )
 
             Logger.logger.info("REQUEST SUCCESS")
@@ -117,19 +135,24 @@ class GmarketGoodsService:
             return Utils().makeResponse(StrRepository().error_official_regist)
 
         Logger.logger.info("====OfficialInfo API Success ====")
+        return Utils().makeResponse(StrRepository().error_none)
 
     @classmethod
     def add_gmarket_coupon_info(cls, params):
         Logger.logger.info("==== AddCouponInfo API Start")
         try:
             coupon_info_model = CouponInfo(params)
-            coupon_info_xml = coupon_info_model.set_xml()
+            coupon_xml_result = coupon_info_model.set_xml()
+
+            if coupon_xml_result.get('errorCode') != "00":
+                return coupon_xml_result
 
             Logger.logger.info("===== AddCouponInfo API STEP2 REQUEST Task====")
+
             response = requests.post(
                 url=cls.api_url_add_item,
                 headers=cls.headers,
-                data=coupon_info_xml,
+                data=coupon_xml_result.get('results')
             )
 
             Logger.logger.info("REQUEST Task SUCCESS ")
@@ -168,3 +191,4 @@ class GmarketGoodsService:
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_coupon_regist)
 
+        return Utils().makeResponse(StrRepository().error_none)

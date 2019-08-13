@@ -14,11 +14,12 @@ class GmarketGoods(Resource):
         params = request.json
 
         if post_type == "excel":
-            GmarketGoodsService.postExcelGoods(params)
+            response = GmarketGoodsService.postExcelGoods(params)
 
         if post_type == "goods":
             pass
-        return Utils().makeResponse(StrRepository().error_none)
+
+        return response
 
 
         pass

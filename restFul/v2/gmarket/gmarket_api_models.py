@@ -160,12 +160,12 @@ class AddItem:
 
         except Exception as e:
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository.error_goods_regist)
+            return Utils().makeResponse(StrRepository().error_goods_regist)
         result = ET.tostring(root, encoding='utf8', method='xml')
 
         Logger.logger.info("==== AddItem API xml success ====")
         Logger.logger.info(result.decode())
-        return result
+        return Utils().makeResponse(StrRepository().error_none, result)
 
 
 class OfficialInfo:
@@ -245,14 +245,14 @@ class OfficialInfo:
         except BaseException as e:
             Logger.logger.info('Official Info create xml Failed')
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository.error_official_regist)
+            return Utils().makeResponse(StrRepository().error_official_regist)
 
         result = ET.tostring(root, encoding='utf8', method='xml')
 
         Logger.logger.info("==== OfficialInfo API xml Success ====")
         Logger.logger.info(result.decode())
 
-        return result
+        return Utils().makeResponse(StrRepository().error_none, result)
 
 
 class CouponInfo:
@@ -345,7 +345,7 @@ class CouponInfo:
         result = ET.tostring(root, encoding='utf8', method='xml')
         Logger.logger.info("==== CouponInfo API xml Success ====")
         Logger.logger.info(result.decode())
-        return result
+        return Utils().makeResponse(StrRepository().error_none, result)
 
 
 def gmarket_response(response_name, content):
