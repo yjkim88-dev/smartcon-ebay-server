@@ -58,7 +58,7 @@ class GoodsRegistDao:
             db.executeQuery(self.query_update_goods_coupon_info, today, coupon_info.get('AutoTermDuration'),
                             coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
                             coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'), coupon_info.get('ApplyPlaceUrl'),
-                            coupon_info.get('ApplyPlaceTelephone'))
+                            coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('GmktItemNo'))
         else:
             return Utils().makeResponse(StrRepository().error_coupon_regist)
 
