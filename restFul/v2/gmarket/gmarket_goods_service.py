@@ -227,12 +227,12 @@ class GmarketGoodsService:
                 Logger.logger.info("====AddPriceInfo API SETEP3 FAILD ====")
 
                 Logger.logger.info(html.escape(add_coupon_res_msg))
-                return Utils().makeResponse(StrRepository().error_coupon_regist)
+                return Utils().makeResponse(StrRepository().error_price_regist)
 
             if add_coupon_res_msg.get('Result') == 'Fail':
                 Logger.logger.info("====AddPriceInfo API SETEP3 FAILD ====")
                 Logger.logger.info(html.escape(add_coupon_res_msg.get('Comment')))
-                return Utils().makeResponse(StrRepository().error_coupon_regist)
+                return Utils().makeResponse(StrRepository().error_price_regist)
 
             Logger.logger.info("==== AddPriceInfo SUCCESS ====")
             Logger.logger.info(add_coupon_res_msg)
@@ -244,11 +244,11 @@ class GmarketGoodsService:
             except BaseException as e:
                 Logger.logger.info("==== AddPriceInfo API STEP4 Failed Insert DB ====")
                 Logger.logger.info(e)
-                return Utils().makeResponse(StrRepository().error_coupon_regist)
+                return Utils().makeResponse(StrRepository().error_price_regist)
 
         except BaseException as e:
             Logger.logger.info("====AddPriceInfo API FAILD ====")
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_coupon_regist)
+            return Utils().makeResponse(StrRepository().error_price_regist)
 
         return Utils().makeResponse(StrRepository().error_none)

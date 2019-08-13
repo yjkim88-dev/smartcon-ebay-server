@@ -337,9 +337,15 @@ class PriceInfo:
     }
 
     def __init__(self, params):
+        display_date = None
+        if params.get('expiration_date') is not None:
+            display_date = params.get('expiration_date')[:4] + '-' + params.get('expiration_date')[4:6] + '-' + \
+                params.get('expiration_date')[6:]
+
+
         self.add_price = {
             'GmktItemNo' : params.get('item_no'),
-            'DisplayDate' : params.get('expiration_date'),
+            'DisplayDate' : display_date,
             'StockQty' : params.get('stock_qty'),
             'SellPrice' : params.get('price')
         }
@@ -374,7 +380,7 @@ class PriceInfo:
         except BaseException as e:
             Logger.logger.info('PriceInfo Info create xml Failed')
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_coupon_regist)
+            return Utils().makeResponse(StrRepository().error_price_regist)
 
         result = ET.tostring(root, encoding='utf8', method='xml')
         Logger.logger.info("==== PriceInfo API xml Success ====")
