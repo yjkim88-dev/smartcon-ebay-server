@@ -9,7 +9,7 @@
     </soap:Header>
     <soap:Body>
         <AddPremiumItem xmlns="http://tpl.gmarket.co.kr/">
-            <AddPremiumItem GmktItemNo="%s">
+            <AddPremiumItem>
                 <Discount xmlns="http://tpl.gmarket.co.kr/tpl.xsd">
                     <DiscountDate/>
                 </Discount>
