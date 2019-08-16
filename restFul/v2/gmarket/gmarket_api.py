@@ -8,7 +8,7 @@ from restFul.v2.gmarket.gmarket_api_models import gmarket_response
 from restFul.v2.gmarket.goods_regist_dao import GoodsRegistDao
 
 
-class GmarketRegAPI:
+class GmarketAPI:
     api_url_add_item = 'http://tpl.gmarket.co.kr/v1/ItemService.asmx'
 
     namespace = {
