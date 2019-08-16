@@ -8,7 +8,7 @@ from restFul.repository import StrRepository
 
 class GoodsRegistDao:
     def __init__(self):
-        # 지마켓 상품등록
+        # 상품(마켓) 등록
         self.query_insert_goods = "INSERT INTO b2c_goods (create_date, modify_date, out_item_no, category_code, item_no, item_name," \
                                        "gd_html, maker_no, expiration_date, price, default_image, large_image, small_image," \
                                        "auto_term_duration, auto_use_term_duration, use_information, help_desk_telno, apply_place, apply_place_url, apply_place_telephone," \
@@ -16,57 +16,76 @@ class GoodsRegistDao:
                                        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 
-        # 조회
+        # 상품들 조회
         self.query_select_goods_item_no = "SELECT * FROM b2c_goods WHERE " \
                                           "modify_date >= %s AND modify_date < %s " \
                                           "AND item_no = %s"
 
+        # 상품 조회
         self.query_select_goods_item_no2 = "SELECT * FROM b2c_goods WHERE item_no = %s"
 
         # 주문내역 조회
         self.query_select_goods = "SELECT * FROM b2c_goods WHERE " \
                                   "modify_date >= %s AND modify_date < %s "
 
-        self.query_update_goods = "UPDATE b2c_goods " \
-                                  "SET modify_date = %s, out_item_no = %s, category_code = %s, item_no = %s," \
-                                          "item_name = %s, gd_html = %s, maker_no = %s, expiration_date = %s, price = %s," \
-                                          "default_image = %s, large_image = %s, small_image = %s, auto_term_duration = %s," \
-                                          "auto_use_term_duration = %s,"\
-                                          "use_information = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s," \
-                                          "apply_place_telephone = %s, display_date = %s, stock_qty = %s, regist_user = %s, shipping_group_code = %s " \
-                                  "WHERE item_no = %s"
-
+        # 상품(마켓) 정보 업데이트
+        self.query_update_goods_market_info = "UPDATE b2c_goods " \
+                                              "SET modify_date = %s, out_item_no = %s, category_code = %s, item_no = %s," \
+                                              "item_name = %s, gd_html = %s, maker_no = %s, expiration_date = %s, price = %s," \
+                                              "default_image = %s, large_image = %s, small_image = %s,"\
+                                              "regist_user = %s, shipping_group_code = %s " \
+                                              "WHERE item_no = %s"
+        
+        # 쿠폰 정보(쿠폰마켓) 업데이트
         self.query_update_goods_coupon_info = "UPDATE b2c_goods " \
                                               "SET modify_date = %s, auto_term_duration = %s, auto_use_term_duration = %s, " \
                                               "use_information = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s, " \
                                               "apply_place_telephone = %s " \
                                               "WHERE item_no = %s"
-
+        
+        # 가격 정보 업데이트
         self.query_update_goods_price_info  = "UPDATE b2c_goods " \
                                               "SET modify_date = %s, display_date = %s, stock_qty = %s " \
                                               "WHERE item_no = %s"
 
-    def update_goods_price_info(self, price_info):
-        Logger.logger.info('[0]Update goods price info start')
-
-        price_info = price_info.add_price
-        Logger.logger.info('[1]db connect')
+    def goods_market_info_db_service(self, item_no, add_item_model, user_id):
+        Logger.logger.info('[0]insert goods start')
         db = MysqlDatabase()
-        goods = db.selectQuery(self.query_select_goods_item_no2, price_info.get('GmktItemNo'))
-        Logger.logger.info('db connect success')
+        goods = db.selectQuery(self.query_select_goods_item_no2, item_no)
+        Logger.logger.info('[1]db connection clear')
+        today = datetime.datetime.now()
 
-        Logger.logger.info(price_info)
-        Logger.logger.info('[2]update')
+        add_item = add_item_model.add_item
+        reference_price = add_item_model.reference_price
+        item_image = add_item_model.item_image
+        shipping = add_item_model.shipping
 
         if (len(goods) > 0):
-            today = datetime.datetime.now()
-
-            db.executeQuery(self.query_update_goods_price_info, today, price_info.get('DisplayDate'),
-                            price_info.get('stock_qty'), price_info.get('GmktItemNo'))
+            Logger.logger.info('[2]update task...')
+            db.executeQuery(
+                self.query_update_goods_market_info,
+                today, add_item.get('OutItemNo'), add_item.get('CategoryCode'), item_no,
+                add_item.get('ItemName'), add_item.get('GdHtml'), add_item.get('MakerNo'),
+                add_item.get('ExpirationDate'), reference_price.get('Price'),
+                item_image.get('DefaultImage'),
+                item_image.get('LargeImage'), item_image.get('SmallImage'),
+                user_id, shipping.get('GroupCode'), item_no
+            )
         else:
-            return Utils().makeResponse(StrRepository().error_coupon_regist)
+            Logger.logger.info('[2]insert task...')
+            db.executeQuery(self.query_insert_goods,
+                            today, today, add_item.get('OutItemNo'), add_item.get('CategoryCode'), item_no,
+                             add_item.get('ItemName'), add_item.get('GdHtml'), add_item.get('MakerNo'),
+                             add_item.get('ExpirationDate'), reference_price.get('Price'), item_image.get('DefaultImage'),
+                             item_image.get('LargeImage'), item_image.get('SmallImage'), None, None, None, None, None, None, None,
+                             None, None, user_id, shipping.get('GroupCode')
+                            )
+        return Utils().makeResponse(StrRepository().error_none)
 
-        Logger.logger.info('[2]Update Goods price Info Update Success')
+    def update_goods_market_info(self, market_info):
+
+        pass
+
 
     def update_goods_coupon_info(self, coupon_info):
         Logger.logger.info('[0]Update goods coupon info start')
@@ -89,42 +108,34 @@ class GoodsRegistDao:
             return Utils().makeResponse(StrRepository().error_coupon_regist)
 
         Logger.logger.info('[2]Update Goods Coupon Info Update Success')
+        return Utils().makeResponse(StrRepository().error_none)
 
-    def insertGoods(self, item_no, add_item_model, user_id):
-        Logger.logger.info('[0]insert goods start')
 
+    def update_goods_price_info(self, price_info):
+        Logger.logger.info('[0]Update goods price info start')
+
+        price_info = price_info.add_price
+        Logger.logger.info('[1]db connect')
         db = MysqlDatabase()
-        goods = db.selectQuery(self.query_select_goods_item_no2, item_no)
-        Logger.logger.info('[1]db connection clear')
-        today = datetime.datetime.now()
-        print (len(goods))
-        if (len(goods) > 0):
-            Logger.logger.info('[2]update task...')
-            print('update')
-        else:
-            Logger.logger.info('[2]insert task...')
-            add_item = add_item_model.add_item
-            reference_price = add_item_model.reference_price
-            item_image = add_item_model.item_image
-            shipping = add_item_model.shipping
-            Logger.logger.info(add_item)
-            Logger.logger.info(reference_price)
-            Logger.logger.info(item_image)
-            Logger.logger.info(shipping)
-            #display_date=None, stock_qty=None,                                              # AddPrice
-            #     regist_user=user_id, )
+        goods = db.selectQuery(self.query_select_goods_item_no2, price_info.get('GmktItemNo'))
+        Logger.logger.info('db connect success')
 
-            # create_date, modify_date, out_item_no, category_code, item_no, item_name, " \
-            # gd_html, maker_no, expiration_date, price, default_image, large_image, small_image, " \
-            # auto_term_duration, auto_use_term_duration, use_information, help_desk_telno, apply_place, apply_place_url, apply_place_telephone, " \
-            # display_date, stock_qty, regist_user, shipping_group_code
-            db.executeQuery(self.query_insert_goods,
-                            today, today, add_item.get('OutItemNo'), add_item.get('CategoryCode'), item_no,
-                             add_item.get('ItemName'), add_item.get('GdHtml'), add_item.get('MakerNo'),
-                             add_item.get('ExpirationDate'), reference_price.get('Price'), item_image.get('DefaultImage'),
-                             item_image.get('LargeImage'), item_image.get('SmallImage'), None, None, None, None, None, None, None,
-                             None, None, user_id, shipping.get('GroupCode')
-                            )
+        Logger.logger.info(price_info)
+        Logger.logger.info('[2]update')
+
+        if (len(goods) > 0):
+            today = datetime.datetime.now()
+
+            db.executeQuery(self.query_update_goods_price_info, today, price_info.get('DisplayDate'),
+                            price_info.get('StockQty'), price_info.get('GmktItemNo'))
+        else:
+            return Utils().makeResponse(StrRepository().error_coupon_regist)
+
+        Logger.logger.info('[2]Update Goods price Info Update Success')
+        return Utils().makeResponse(StrRepository().error_none)
+
+
+
 
     def selectGoods(self, start_date, end_date, item_no=None):
         db = MysqlDatabase()

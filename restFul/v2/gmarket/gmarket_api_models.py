@@ -15,10 +15,16 @@ class AddItem:
         'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
     }
 
+    # 지마켓 SOAP XML API 요청후 응답 XML의 요소명의 prefix를 name으로 사용
+    # ex <AddItemResponse> => name = AddItem
+    name = "AddItem"
+
     def __init__(self, params={}):
         expiration_date = str(params.get('expiration_date'))
         expiration_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
                           expiration_date[6:]
+
+        self.user_id = params.get('user_id')
 
         self.add_item = {
             "OutItemNo": params.get('out_item_no'),
@@ -174,6 +180,8 @@ class OfficialInfo:
         'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
     }
 
+    name = "AddOfficialInfo"
+
     def __init__(self, params):
         self.item_no = str(params.get('item_no', ''))
         self.group_code = params.get('GroupCode', '34')
@@ -261,6 +269,8 @@ class CouponInfo:
         'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
     }
 
+    name = "AddItemCoupon"
+
     def __init__(self, params):
         self.add_item_coupon = {
             'GmktItemNo' : str(params.get('item_no', '')),
@@ -335,6 +345,8 @@ class PriceInfo:
         'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
     }
 
+    name = "AddPrice"
+
     def __init__(self, params):
         display_date = None
         Logger.logger.info('set PriceInfo')
@@ -399,6 +411,8 @@ class PremiumInfo:
         'base': "http://tpl.gmarket.co.kr/",
         'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
     }
+
+    name = "AddPremiumItem"
 
     def __init__(self, params):
         self.item_no = params.get('item_no')

@@ -6,7 +6,7 @@ from .goods_regist_dao import GoodsRegistDao
 from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, PriceInfo, PremiumInfo, gmarket_response
 from restFul.repository import StrRepository
 from restFul.utils import Utils
-
+from restFul.v2.gmarket.gmarket_reg_api import GmarketRegAPI
 
 class GmarketGoodsService:
     api_url_add_item = 'http://tpl.gmarket.co.kr/v1/ItemService.asmx'
@@ -15,292 +15,48 @@ class GmarketGoodsService:
     @classmethod
     def postExcelGoods(cls, params):
         try:
-            result = cls.add_gmarket_item(params)
-            if result.get('errorCode') != "00":
-                return result
+            # STEP1 상품등록
+            item_model = AddItem(params)                        # 요청할 API 모델 생성
+            add_item_api = GmarketRegAPI(item_model)         # 이베이 쿠폰등록 인스턴스 생성
+            add_item_result = add_item_api.run()                # API 작업 수행
 
-            params['item_no'] = result.get('results')
-            result = cls.add_gmarket_official_info(params)
-            if result.get('errorCode') != "00":
-                return result
+            if add_item_result.get('errorCode') != "00":        # 작업 결과 확인
+                return add_item_result                          # 에러 발생
+            params['item_no'] = add_item_result.get('results')  # 상품 등록/수정 후 받은 지마켓 상품코드 적용
 
-            result = cls.add_gmarket_coupon_info(params)
-            if result.get('errorCode') != "00":
-                return result
-
-            result = cls.add_gmarket_price_info(params)
-            if result.get('errorCode') != "00":
-                return result
-
-            result = cls.add_gmarket_premium_info(params)
-            if result.get('errorCode') != "00":
-                return result
-
-        except BaseException as e:
-            Logger.logger.info(e)
-            return Utils().makeResponse(("-1", "통신오류가 발생했습니다."))
-        return Utils().makeResponse(StrRepository().error_none)
-
-    @classmethod
-    def add_gmarket_item(cls, params):
-        try:
-            add_item_model = AddItem(params)
-            user_id = params.get('user_id')
-            xml_result = add_item_model.set_xml()
-
-            if xml_result.get('errorCode') != '00':
-                return Utils().makeResponse(StrRepository().error_goods_regist)
-
-            Logger.logger.info("===== AddItem API STEP2 REQUEST ====")
-
-            response = requests.post(
-                url=cls.api_url_add_item,
-                headers=cls.headers,
-                data=xml_result.get('results')
-            )
-            Logger.logger.info("REQUEST SUCCESS")
-
-            Logger.logger.info("===== AddItem API STEP3 RESPONSE PARSING ====")
-            print(response.content.decode())
-            Logger.logger.info(response.content.decode())
-
-            add_item_res_code, add_item_res_msg = gmarket_response('AddItem', response.content)
-
-            if add_item_res_code != "00":
-                Logger.logger.info("====AddItem API SETEP3 FAILD ====")
-                Logger.logger.info(html.escape(add_item_res_msg))
-                return Utils().makeResponse(StrRepository().error_goods_regist)
-
-            Logger.logger.info("==== PARSING SUCCESS ====")
-            Logger.logger.info(add_item_res_msg)
-
-            try:
-                Logger.logger.info("==== AddItem API STEP4 Insert DB ====")
-                item_no = add_item_res_msg['GmktItemNo']
-
-                add_item_model.shipping['GroupCode'] = \
-                    add_item_res_msg.get('ShippingGroupCode') \
-                        if add_item_res_msg.get('ShippingGroupCode') is not None \
-                        else add_item_model.shipping.get('GroupCode')
-
-                GoodsRegistDao().insertGoods(item_no, add_item_model, user_id)
-
-            except BaseException as e:
-                Logger.logger.info("==== AddItem API STEP4 Failed Insert DB ====")
-                Logger.logger.info(e)
-                return Utils().makeResponse(StrRepository().error_goods_regist)
-
-        except BaseException as e:
-            Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_goods_regist)
-
-        Logger.logger.info("==== AddItem API Success ====")
-
-        return Utils().makeResponse(StrRepository().error_none, item_no)
-
-    @classmethod
-    def add_gmarket_official_info(cls, params):
-        Logger.logger.info("==== AddOfficialInfo API Start")
-        try:
+            # STEP2 고시정보 등록
             official_info_model = OfficialInfo(params)
-            official_xml_result = official_info_model.set_xml()
+            add_official_info_api = GmarketRegAPI(official_info_model)
+            add_official_info_result = add_official_info_api.run()
 
-            if official_xml_result.get('errorCode') != "00":
-                return official_xml_result
+            if add_official_info_result.get('errorCode') != "00":
+                return add_official_info_result
 
-            Logger.logger.info("===== AddOfficialInfo API STEP2 REQUEST ====")
-            response = requests.post(
-                url=cls.api_url_add_item,
-                headers=cls.headers,
-                data=official_xml_result.get('results')
-            )
-
-            Logger.logger.info("REQUEST SUCCESS")
-
-            Logger.logger.info("===== AddOfficialInfo API STEP3 RESPONSE PARSING ====")
-            print(response.content.decode())
-            Logger.logger.info(response.content.decode())
-
-            add_official_res_code, add_official_res_msg = gmarket_response('AddOfficialInfo',response.content)
-
-            if add_official_res_code != "00":
-                Logger.logger.info("====AddOfficialInfo API SETEP3 FAILD ====")
-
-                Logger.logger.info(html.escape(add_official_res_msg))
-                return Utils().makeResponse(StrRepository().error_official_regist)
-
-            if add_official_res_msg.get('Result') == 'Fail':
-                Logger.logger.info("====AddOfficialInfo API SETEP3 FAILD ====")
-                Logger.logger.info(html.escape(add_official_res_msg))
-                return Utils().makeResponse(StrRepository().error_official_regist)
-
-            Logger.logger.info("==== PARSING SUCCESS ====")
-            Logger.logger.info(add_official_res_msg)
-
-        except BaseException as e:
-            Logger.logger.info("====OfficialInfo API FAILD ====")
-            Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_official_regist)
-
-        Logger.logger.info("====OfficialInfo API Success ====")
-        return Utils().makeResponse(StrRepository().error_none)
-
-    @classmethod
-    def add_gmarket_coupon_info(cls, params):
-        Logger.logger.info("==== AddCouponInfo API Start")
-        try:
+            # STEP3 쿠폰정보 등록
             coupon_info_model = CouponInfo(params)
-            coupon_xml_result = coupon_info_model.set_xml()
+            add_coupon_info_api = GmarketRegAPI(coupon_info_model)
+            add_coupon_info_result = add_coupon_info_api.run()
 
-            if coupon_xml_result.get('errorCode') != "00":
-                return coupon_xml_result
+            if add_coupon_info_result.get('errorCode') != "00":
+                return add_coupon_info_result
 
-            Logger.logger.info("===== AddCouponInfo API STEP2 REQUEST Task====")
-
-            response = requests.post(
-                url=cls.api_url_add_item,
-                headers=cls.headers,
-                data=coupon_xml_result.get('results')
-            )
-
-            Logger.logger.info("REQUEST Task SUCCESS ")
-
-            Logger.logger.info("===== AddCouponInfo API STEP3 RESPONSE PARSING ====")
-            print(response.content.decode())
-            Logger.logger.info(response.content.decode())
-
-            add_coupon_res_code, add_coupon_res_msg = gmarket_response('AddItemCoupon', response.content)
-
-            if add_coupon_res_code != "00":
-                Logger.logger.info("====AddCouponInfo API SETEP3 FAILD ====")
-
-                Logger.logger.info(html.escape(add_coupon_res_msg))
-                return Utils().makeResponse(StrRepository().error_coupon_regist)
-
-            if add_coupon_res_msg.get('Result') == 'Fail':
-                Logger.logger.info("====AddCouponInfo API SETEP3 FAILD ====")
-                Logger.logger.info(html.escape(add_coupon_res_msg.get('Comment')))
-                return Utils().makeResponse(StrRepository().error_coupon_regist)
-
-            Logger.logger.info("==== AddCouponInfo SUCCESS ====")
-            Logger.logger.info(add_coupon_res_msg)
-
-            try:
-                Logger.logger.info("==== AddCouponInfo API STEP4 Insert DB ====")
-                GoodsRegistDao().update_goods_coupon_info(coupon_info_model)
-
-            except BaseException as e:
-                Logger.logger.info("==== AddCouponInfo API STEP4 Failed Insert DB ====")
-                Logger.logger.info(e)
-                return Utils().makeResponse(StrRepository().error_coupon_regist)
-
-        except BaseException as e:
-            Logger.logger.info("====AddCouponInfo API FAILD ====")
-            Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_coupon_regist)
-
-        return Utils().makeResponse(StrRepository().error_none)
-
-    @classmethod
-    def add_gmarket_price_info(cls, params):
-        Logger.logger.info("==============================")
-        Logger.logger.info("==== AddPriceInfo API Start===")
-        try:
+            # STEP4 가격정보 등록
             price_info_model = PriceInfo(params)
-            price_xml_result = price_info_model.set_xml()
+            add_price_api = GmarketRegAPI(price_info_model)
+            add_price_api_result = add_price_api.run()
 
-            if price_xml_result.get('errorCode') != "00":
-                return price_xml_result
+            if add_price_api_result.get('errorCode') != "00":
+                return add_price_api_result
 
-            Logger.logger.info("===== AddPriceInfo API STEP2 REQUEST Task====")
-
-            response = requests.post(
-                url=cls.api_url_add_item,
-                headers=cls.headers,
-                data=price_xml_result.get('results')
-            )
-
-            Logger.logger.info("REQUEST Task SUCCESS ")
-
-            Logger.logger.info("===== AddPriceInfo API STEP3 RESPONSE PARSING ====")
-            print(response.content.decode())
-            Logger.logger.info(response.content.decode())
-
-            add_coupon_res_code, add_coupon_res_msg = gmarket_response('AddPrice', response.content)
-
-            if add_coupon_res_code != "00":
-                Logger.logger.info("====AddPriceInfo API SETEP3 FAILD ====")
-
-                Logger.logger.info(html.escape(add_coupon_res_msg))
-                return Utils().makeResponse(StrRepository().error_price_regist)
-
-            if add_coupon_res_msg.get('Result') == 'Fail':
-                Logger.logger.info("====AddPriceInfo API SETEP3 FAILD ====")
-                Logger.logger.info(html.escape(add_coupon_res_msg.get('Comment')))
-                return Utils().makeResponse(StrRepository().error_price_regist)
-
-            Logger.logger.info("==== AddPriceInfo SUCCESS ====")
-            Logger.logger.info(add_coupon_res_msg)
-
-            try:
-                Logger.logger.info("==== AddPriceInfo API STEP4 Insert DB ====")
-                GoodsRegistDao().update_goods_price_info(price_info_model)
-
-            except BaseException as e:
-                Logger.logger.info("==== AddPriceInfo API STEP4 Failed Insert DB ====")
-                Logger.logger.info(e)
-                return Utils().makeResponse(StrRepository().error_price_regist)
-
-        except BaseException as e:
-            Logger.logger.info("====AddPriceInfo API FAILD ====")
-            Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_price_regist)
-
-        return Utils().makeResponse(StrRepository().error_none)
-
-    @classmethod
-    def add_gmarket_premium_info(cls, params):
-        Logger.logger.info("==== AddPremium API Start")
-        try:
+            # STEP5 고객 혜택
             premium_info_model = PremiumInfo(params)
-            premium_xml_result = premium_info_model.set_xml()
+            add_premium_api = GmarketRegAPI(premium_info_model)
+            add_premium_api_result = add_premium_api.run()
 
-            if premium_xml_result.get('errorCode') != "00":
-                return premium_xml_result
-
-            Logger.logger.info("===== AddPremium API STEP2 REQUEST Task====")
-
-            response = requests.post(
-                url=cls.api_url_add_item,
-                headers=cls.headers,
-                data=premium_xml_result.get('results')
-            )
-
-            Logger.logger.info("REQUEST Task SUCCESS ")
-
-            Logger.logger.info("===== AddPremium API STEP3 RESPONSE PARSING ====")
-            print(response.content.decode())
-            Logger.logger.info(response.content.decode())
-
-            add_premium_res_code, add_premium_res_msg = gmarket_response('AddPremiumItem', response.content)
-
-            if add_premium_res_code != "00":
-                Logger.logger.info("====AddPremium API SETEP3 FAILD ====")
-
-                Logger.logger.info(html.escape(add_premium_res_msg))
-                return Utils().makeResponse(StrRepository().error_premium_regist)
-
-            if add_premium_res_msg.get('Result') == 'Fail':
-                Logger.logger.info("====AddPremium API SETEP3 FAILD ====")
-                Logger.logger.info(html.escape(add_premium_res_msg.get('Comment')))
-                return Utils().makeResponse(StrRepository().error_premium_regist)
-
-            Logger.logger.info("==== AddPremium SUCCESS ====")
-            Logger.logger.info(add_premium_res_msg)
-
+            if add_premium_api_result.get('errorCode') != "00":
+                return add_premium_api_result
         except BaseException as e:
-            Logger.logger.info("====AddPriceInfo API FAILD ====")
+            Logger.logger.info("=========== ERROR POST EXCEL GOODS ===========")
             Logger.logger.info(e)
-            return Utils().makeResponse(StrRepository().error_premium_regist)
-
+            return Utils().makeResponse(StrRepository().error_system)
         return Utils().makeResponse(StrRepository().error_none)
