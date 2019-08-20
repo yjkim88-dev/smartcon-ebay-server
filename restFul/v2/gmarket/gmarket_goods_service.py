@@ -1,4 +1,5 @@
 from .gmarket_api_models import AddItem, OfficialInfo, CouponInfo, PriceInfo, PremiumInfo
+from restFul.v2.gmarket.goods_regist_dao import GoodsRegistDao
 from restFul.v2.gmarket.gmarket_api import GmarketAPI
 from restFul.repository import StrRepository
 from restFul.utils import Utils
@@ -9,6 +10,19 @@ from Logger import Logger
 class GmarketGoodsService:
     api_url_add_item = 'http://tpl.gmarket.co.kr/v1/ItemService.asmx'
     headers = {'Content-Type': 'text/xml; charset=utf-8'}
+
+    @classmethod
+    def mysql_fetch_goods(cls, params):
+        try:
+            item_no = params['item_no']
+            result = GoodsRegistDao().fetch_goods(item_no)
+            if result.get('errorCode') != "00":
+                return result
+        except BaseException as e:
+            Logger.logger.info('goods service faild')
+            Logger.logger.waring(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return result
 
     @classmethod
     def goods_api(cls, params):

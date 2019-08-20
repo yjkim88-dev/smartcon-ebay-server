@@ -1,15 +1,26 @@
-from flask_restful import Resource
-from flask import request
-from restFul.utils import Utils
-from restFul.repository import StrRepository
 from .gmarket_goods_service import GmarketGoodsService
+from restFul.repository import StrRepository
+from flask_restful import Resource
+from restFul.utils import Utils
+from flask import request
+from Logger import Logger
 
 
 
 class GmarketGoods(Resource):
     def get(self):
-        print('hi')
-        pass
+        Logger.logger.info("[GET] gmarket goods")
+        try:
+            params = request.values
+            gmkt_goods_result = GmarketGoodsService.mysql_fetch_goods(params)
+            if gmkt_goods_result.get('errorCode') != "00":
+                return Utils().makeResponse((StrRepository().error_system))
+        except BaseException as e:
+            Logger.logger.info('[GET] GmarketGoods Faild')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return gmkt_goods_result
+
 
     def post(self):
         post_type = request.values.get('type')

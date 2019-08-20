@@ -48,6 +48,47 @@ class GoodsRegistDao:
                                               "SET modify_date = %s, display_date = %s, stock_qty = %s " \
                                               "WHERE item_no = %s"
 
+    def fetch_goods(self, item_no):
+        try:
+            Logger.logger.info('===== fetchGoods STEP1 DB Connection =====')
+            db = MysqlDatabase()
+            Logger.logger.info('===== fetchGoods DB Connection Complete=====')
+
+            Logger.logger.info('===== fetchGoods STEP2 Fetch Goods =====')
+            goods = db.selectQuery(self.query_select_goods_item_no2, item_no)
+            Logger.logger.info('===== fetchGoods Fetch Goods Complete=====')
+            goods = goods[0]
+            goods = {
+                'price': goods['PRICE'],
+                'create_date': str(goods['CREATE_DATE']),
+                'modify_date': str(goods['MODIFY_DATE']),
+                'use_information': goods['USE_INFORMATION'],
+                'auto_term_duration': goods['AUTO_TERM_DURATION'],
+                'help_desk_telno': goods['HELP_DESK_TELNO'],
+                'large_image': goods['LARGE_IMAGE'],
+                'small_image': goods['SMALL_IMAGE'],
+                'default_image': goods['DEFAULT_IMAGE'],
+                'shipping_group_code': goods['SHIPPING_GROUP_CODE'],
+                'expiration_date': str(goods['EXPIRATION_DATE']),
+                'apply_place': goods['APPLY_PLACE'],
+                'item_no': goods['ITEM_NO'],
+                'stock_qty': goods['STOCK_QTY'],
+                'item_name': goods['ITEM_NAME'],
+                'apply_place_telephone': goods['APPLY_PLACE_TELEPHONE'],
+                'gd_html': goods['GD_HTML'],
+                'out_item_no': goods['OUT_ITEM_NO'],
+                'maker_no': goods['MAKER_NO'],
+                'display_date': str(goods['DISPLAY_DATE']),
+                'apply_place_url': goods['APPLY_PLACE_URL'],
+                'auto_use_term_duration': goods['AUTO_USE_TERM_DURATION'],
+                'category_code': goods['CATEGORY_CODE']
+            }
+        except BaseException as e:
+            Logger.logger.waring('===== fetchGoods Faild =====')
+            Logger.logger.waring(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return Utils().makeResponse(StrRepository().error_none, goods)
+
     def goods_market_info_db_service(self, item_no, add_item_model, user_id):
         Logger.logger.info('[0]insert goods start')
         db = MysqlDatabase()
@@ -81,11 +122,6 @@ class GoodsRegistDao:
                              None, None, user_id, shipping.get('GroupCode')
                             )
         return Utils().makeResponse(StrRepository().error_none)
-
-    def update_goods_market_info(self, market_info):
-
-        pass
-
 
     def update_goods_coupon_info(self, coupon_info):
         Logger.logger.info('[0]Update goods coupon info start')
