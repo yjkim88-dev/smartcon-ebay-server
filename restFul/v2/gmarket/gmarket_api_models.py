@@ -186,13 +186,13 @@ class OfficialInfo:
         self.item_no = str(params.get('item_no', ''))
         self.group_code = params.get('GroupCode', '34')
         self.sub_info_list = [
-            {"Code": '34-1', "AddYn": 'Y', "AddValue": "(주)스마트콘" },
-            {"Code": '34-2', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
-            {"Code": '34-3', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
-            {"Code": '34-4', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공" },
-            {"Code": '34-5', "AddYn": 'Y', "AddValue": "전액환불 불가" },
-            {"Code": '34-6', "AddYn": 'Y', "AddValue": "02-561-0671" },
-            {"Code": '34-7', "AddYn": 'Y', "AddValue": "구매후 10분이내" }
+            {"Code": '34-1', "AddYn": 'Y', "AddValue": params.get('issuer',"(주)스마트콘") },
+            {"Code": '34-2', "AddYn": 'Y', "AddValue": params.get('official_expiration_date',"상품 상세 페이지에 제공") },
+            {"Code": '34-3', "AddYn": 'Y', "AddValue": params.get('use_condition', "상품 상세 페이지에 제공") },
+            {"Code": '34-4', "AddYn": 'Y', "AddValue": params.get('use_brand', "상품 상세 페이지에 제공") },
+            {"Code": '34-5', "AddYn": 'Y', "AddValue": params.get('refund_condition',"전액환불 불가")},
+            {"Code": '34-6', "AddYn": 'Y', "AddValue": params.get('counsel_tel_no',"02-561-0671") },
+            {"Code": '34-7', "AddYn": 'Y', "AddValue": params.get('estimated_shipping', "구매후 10분이내") }
         ]
 
         self.trade_info_list = [
@@ -276,9 +276,9 @@ class CouponInfo:
             'GmktItemNo' : str(params.get('item_no', '')),
             'CouponType' : params.get('coupon_type', 'Mobile'),
             'CouponMoneyType' : params.get('coupon_money_type', 'FixedAmount'),
-            'CouponMoney' : params.get('price', ''),
+            'CouponMoney' : params.get('coupon_money') if params.get('coupon_money') is not None else params.get('price', ''),
             'ServiceName' : params.get('item_name', ''),
-            'CouponImageUrl' : params.get('default_image', ''),
+            'CouponImageUrl' : params.get('coupon_image_url') if params.get('coupon_image_url') is not None else params.get('default_image', ''),
             'ValidTermType' : params.get('valid_term_type', 'AutoTerm'),
             'AutoTermStartDay' : params.get('auto_term_start_day', '0'),
             'AutoTermDuration' : params.get('auto_term_duration'),
@@ -348,12 +348,12 @@ class PriceInfo:
     name = "AddPrice"
 
     def __init__(self, params):
-        display_date = None
+        display_date = params.get('display_date') if params.get('display_date') is not None else params.get('expration_date')
         Logger.logger.info('set PriceInfo')
         Logger.logger.info(params)
         try:
-            if params.get('expiration_date') is not None:
-                expiration_date = str(params.get('expiration_date'))
+            if display_date is not None:
+                expiration_date = str(display_date)
                 display_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
                                   expiration_date[6:]
 
@@ -365,7 +365,7 @@ class PriceInfo:
             'GmktItemNo' : params.get('item_no'),
             'DisplayDate' : display_date,
             'StockQty' : params.get('stock_qty'),
-            'SellPrice' : params.get('price')
+            'SellPrice' : params.get('sell_price') if params.get('sell_price') is not None else params.get('price')
         }
 
     def set_xml(self):

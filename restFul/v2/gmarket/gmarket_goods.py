@@ -34,6 +34,17 @@ class GmarketGoods(Resource):
         if post_type == "market":
             response = GmarketGoodsService.market_api(params)
 
+        elif post_type == "official":
+            response = GmarketGoodsService.official_api(params)
+
+        elif post_type == "coupon":
+            response = GmarketGoodsService.coupon_market_api(params)
+
+        elif post_type == "price":
+            response = GmarketGoodsService.price_api(params)
+
+        elif post_type == "premium":
+            response = GmarketGoodsService.premium_api(params)
         return response
 
     def put(self):

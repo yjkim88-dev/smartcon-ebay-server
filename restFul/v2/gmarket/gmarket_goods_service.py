@@ -124,7 +124,7 @@ class GmarketGoodsService:
         try:
             # STEP5 고객 혜택
             premium_info_model = PremiumInfo(params)
-            add_premium_api = GmarketRegAPI(premium_info_model)
+            add_premium_api = GmarketAPI(premium_info_model)
             add_premium_api_result = add_premium_api.run()
         except BaseException as e:
             Logger.logger.info("=========== ERROR PREMIUM API ===========")

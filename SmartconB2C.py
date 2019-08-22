@@ -58,7 +58,7 @@ def after_request(response):
                          "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, restKey")
 
     if (request.method != 'OPTIONS'):
-        if "/smartconb2c/v1/b2c" in request.path:
+        if "/smartconb2c/v1/b2c" in request.path or "/smartconb2c/v2/b2c" in request.path:
             if "login" not in request.path and "signup" not in request.path and "resend" not in request.path:
                 if restKey == None:
                     return unauthorized()
