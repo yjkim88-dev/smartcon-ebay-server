@@ -348,7 +348,7 @@ class PriceInfo:
     name = "AddPrice"
 
     def __init__(self, params):
-        display_date = params.get('display_date') if params.get('display_date') is not None else params.get('expration_date')
+        display_date = params.get('display_date') if params.get('display_date') is not None else params.get('expiration_date')
         Logger.logger.info('set PriceInfo')
         Logger.logger.info(params)
         try:
