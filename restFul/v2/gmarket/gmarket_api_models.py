@@ -8,6 +8,8 @@ from restFul.utils import Utils
 from restFul.repository import StrRepository
 xml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xmls')
 
+
+
 class AddItem:
     namespace = {
         'soap': "http://schemas.xmlsoap.org/soap/envelope/",
@@ -21,8 +23,7 @@ class AddItem:
 
     def __init__(self, params={}):
         expiration_date = str(params.get('expiration_date'))
-        expiration_date = expiration_date[:4] + '-' + expiration_date[4:6] + '-' + \
-                          expiration_date[6:]
+        expiration_date = Utils().convertStringDateToM(expiration_date)
 
         self.user_id = params.get('user_id')
 
@@ -272,6 +273,12 @@ class CouponInfo:
     name = "AddItemCoupon"
 
     def __init__(self, params):
+        fixed_term_start_date = Utils().convertStringDateToM(params.get('fixed_term_start_date')) if params.get('fixed_term_start_date') is not None else None
+        fixed_term_end_date  = Utils().convertStringDateToM(params.get('fixed_term_end_date')) if params.get('fixed_term_end_date') is not None else None
+        fixed_use_term_start_date = Utils().convertStringDateToM(params.get('fixed_use_term_start_date')) if params.get('fixed_use_term_start_date') is not None else None
+        fixed_use_term_end_date = Utils().convertStringDateToM(params.get('fixed_use_term_end_date')) if params.get('fixed_use_term_end_date') is not None else None
+        if(params.get('valid_term_type')):
+            pass
         self.add_item_coupon = {
             'GmktItemNo' : str(params.get('item_no', '')),
             'CouponType' : params.get('coupon_type', 'Mobile'),
@@ -280,11 +287,15 @@ class CouponInfo:
             'ServiceName' : params.get('service_name') if params.get('service_name') is not None else params.get('item_name'),
             'CouponImageUrl' : params.get('coupon_image_url') if params.get('coupon_image_url') is not None else params.get('default_image'),
             'ValidTermType' : params.get('valid_term_type', 'AutoTerm'),
-            'AutoTermStartDay' : params.get('auto_term_start_day', '0'),
+            'AutoTermStartDay' : params.get('auto_term_start_day'),
             'AutoTermDuration' : params.get('auto_term_duration'),
-            'UseTermType' : params.get('user_term_type', 'AutoTerm'),
-            'AutoUseTermStartDay' : params.get('auto_use_term_start_day', '0'),
-            'AutoUseTermDuration' : params.get('auto_use_term_duration', ''),
+            'FixedTermStartDate' : fixed_term_start_date,
+            'FixedTermEndDate' : fixed_term_end_date,
+            'UseTermType' : params.get('use_term_type', 'AutoTerm'),
+            'AutoUseTermStartDay' : params.get('auto_use_term_start_day'),
+            'AutoUseTermDuration' : params.get('auto_use_term_duration'),
+            'FixedUseTermStartDate': fixed_use_term_start_date,
+            'FixedUseTermEndDate' : fixed_use_term_end_date,
             'UseInformation' : params.get('use_information', ''),
             'HelpDeskTelNo' : params.get('help_desk_telno', ''),
             'ApplyPlace' : params.get('apply_place', ''),

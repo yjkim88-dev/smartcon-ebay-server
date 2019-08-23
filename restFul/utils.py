@@ -29,6 +29,9 @@ class Utils:
         else:
             return str
 
+    def convertStringDateToM(self, date):
+        return date[:4] + '-' + date[4:6] + '-' + date[6:]
+
     @staticmethod
     def set_xml_element_attrib(element, attr_name, value):
         if value is not None:
