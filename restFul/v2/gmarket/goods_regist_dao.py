@@ -76,6 +76,22 @@ class GoodsRegistDao:
                                               "apply_place_telephone = %s " \
                                               "WHERE item_no = %s"
 
+        # 쿠폰 정보 업데이트 v2
+        self.query_update_goods_coupon_info_v2 = "UPDATE b2c_goods INNER JOIN b2c_goods_sub " \
+                                                 "ON b2c_goods.item_no = b2c_goods_sub.item_no " \
+                                                 "SET b2c_goods.modify_date = %s, b2c_goods.auto_term_duration = %s, " \
+                                                 "b2c_goods.auto_use_term_duration = %s, b2c_goods.use_information = %s, " \
+                                                 "b2c_goods.help_desk_telno = %s, b2c_goods.apply_place = %s, " \
+                                                 "b2c_goods.apply_place_url = %s, b2c_goods.apply_place_telephone = %s, " \
+                                                 "b2c_goods_sub.service_name = %s, b2c_goods_sub.valid_term_type = %s," \
+                                                 "b2c_goods_sub.auto_term_start_day = %s, b2c_goods_sub.fixed_term_start_date= %s," \
+                                                 "b2c_goods_sub.fixed_term_end_date =%s, b2c_goods_sub.use_term_type =%s," \
+                                                 "b2c_goods_sub.auto_use_term_start_day =%s, b2c_goods_sub.fixed_use_term_start_date=%s," \
+                                                 "b2c_goods_sub.fixed_use_term_end_date=%s, b2c_goods_sub.find_guide=%s," \
+                                                 "b2c_goods_sub.publication_corp=%s, publication_corp_web_url=%s," \
+                                                 "b2c_goods_sub.is_cancel=%s, b2c_goods_sub.coupon_image_url = %s " \
+                                                 "WHERE b2c_goods.item_no = %s"
+
         # 가격 정보 업데이트
         self.query_update_goods_price_info = "UPDATE b2c_goods " \
                                              "SET modify_date = %s, display_date = %s, stock_qty = %s " \
@@ -138,7 +154,6 @@ class GoodsRegistDao:
                 'publication_corp': goods['PUBLICATION_CORP'],
                 'publication_corp_web_url': goods['PUBLICATION_CORP_WEB_URL'],
                 'is_cancel': goods['IS_CANCEL'],
-                'use_infomation': goods['USE_INFOMATION'],
                 'coupon_image_url': goods['COUPON_IMAGE_URL'],
             }
         except BaseException as e:
@@ -223,26 +238,46 @@ class GoodsRegistDao:
             return Utils().makeResponse(StrRepository().error_system)
         return Utils().makeResponse(StrRepository().error_none)
 
-
-
     def update_goods_coupon_info(self, coupon_info):
-        Logger.logger.info('[0]Update goods coupon info start')
+        Logger.logger.info('Update goods coupon info start!')
 
         coupon_info = coupon_info.add_item_coupon
-        Logger.logger.info('[1]db connect')
+        Logger.logger.info('db connect...')
         db = MysqlDatabase()
         goods = db.selectQuery(self.query_select_goods_item_no2, coupon_info.get('GmktItemNo'))
+        goods_sub = db.selectQuery(self.query_select_goods_sub_item_no, coupon_info.get('GmktItemNo'))
         Logger.logger.info('db connect success')
 
         Logger.logger.info(coupon_info)
         Logger.logger.info('[2]update')
         if (len(goods) > 0):
+            if len(goods_sub) < 0:
+                Logger.logger.info("not goods_sub info")
+                Logger.logger.info("goods_sub info Insert Task Start")
+                db.executeQuery(self.query_insert_goods_sub_init, coupon_info.get('GmktItemNo'))
+                Logger.logger.info("goods_sub info Insert Task Success!!!")
             today = datetime.datetime.now()
-            db.executeQuery(self.query_update_goods_coupon_info, today, coupon_info.get('AutoTermDuration'),
-                            coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
-                            coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'),
-                            coupon_info.get('ApplyPlaceUrl'),
-                            coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('GmktItemNo'))
+            Logger.logger.info(self.query_update_goods_coupon_info_v2 % (today, coupon_info.get('AutoTermDuration'),
+                coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
+                coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'),coupon_info.get('ApplyPlaceUrl'),
+                coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('ServiceName'), coupon_info.get('ValidTermType'),
+                coupon_info.get('AutoTermStartDay'), coupon_info.get('FixedTermStartDate'),
+                coupon_info.get('FixedTermEndDate'), coupon_info.get('UseTermType'), coupon_info.get('AutoUseTermStartDay'),
+                coupon_info.get('FixedUseTermStartDate'), coupon_info.get('FixedUseTermEndDate'),
+                coupon_info.get('FindGuide'), coupon_info.get('PublicationCorp'), coupon_info.get('PublicationCorpWebUrl'),
+                coupon_info.get('IsCancel'), coupon_info.get('CouponImageUrl'), coupon_info.get('GmktItemNo')))
+
+            db.executeQuery(
+                self.query_update_goods_coupon_info_v2, today, coupon_info.get('AutoTermDuration'),
+                coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
+                coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'),coupon_info.get('ApplyPlaceUrl'),
+                coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('ServiceName'), coupon_info.get('ValidTermType'),
+                coupon_info.get('AutoTermStartDay'), coupon_info.get('FixedTermStartDate'),
+                coupon_info.get('FixedTermEndDate'), coupon_info.get('UseTermType'), coupon_info.get('AutoUseTermStartDay'),
+                coupon_info.get('FixedUseTermStartDate'), coupon_info.get('FixedUseTermEndDate'),
+                coupon_info.get('FindGuide'), coupon_info.get('PublicationCorp'), coupon_info.get('PublicationCorpWebUrl'),
+                coupon_info.get('IsCancel'), coupon_info.get('CouponImageUrl'), coupon_info.get('GmktItemNo')
+            )
         else:
             return Utils().makeResponse(StrRepository().error_coupon_regist)
 
