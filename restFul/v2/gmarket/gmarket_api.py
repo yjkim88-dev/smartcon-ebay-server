@@ -125,6 +125,10 @@ class GmarketAPI:
                 if add_item_result.get('errorCode') != "00":
                     return add_item_result
                 self.title_logging('SUCCESS DB TASK')
+            elif self.name == "AddOfficialInfo":
+                official_result = GoodsRegistDao().update_goods_sub_official_info(self.model)
+                if official_result.get('errorCode') != "00":
+                    return official_result
             elif self.name == "AddItemCoupon":
                 coupon_result = GoodsRegistDao().update_goods_coupon_info(self.model)
                 if coupon_result.get('errorCode') != "00":

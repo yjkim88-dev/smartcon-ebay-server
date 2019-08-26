@@ -9,7 +9,7 @@ from restFul.repository import StrRepository
 
 class GoodsRegistDao:
     def __init__(self):
-        self.query_insert_goods_sub_init = "INSERT INTO b2c_goods_sub (item_no) VALUES (%S)"
+        self.query_insert_goods_sub_init = "INSERT INTO b2c_goods_sub (item_no) VALUES (%s)"
         # 상품(마켓) 등록
         self.query_insert_goods = "INSERT INTO b2c_goods (create_date, modify_date, out_item_no, category_code, item_no, item_name," \
                                   "gd_html, maker_no, expiration_date, price, default_image, large_image, small_image," \
@@ -19,7 +19,7 @@ class GoodsRegistDao:
         # 상품(마켓) sub 등록
         self.query_insert_sub_goods = "INSERT INTO b2c_goods_sub " \
                                       "(item_no, order_limit_max, order_limit_period, order_limit_count) " \
-                                      "VALUES (%s, %s, %S, %s)"
+                                      "VALUES (%s, %s, %s, %s)"
 
         # sub 테이블 조회
         self.query_select_goods_sub_item_no = "SELECT * FROM b2c_goods_sub WHERE item_no = %s"
@@ -28,6 +28,7 @@ class GoodsRegistDao:
         self.query_select_goods_item_no = "SELECT * FROM b2c_goods WHERE " \
                                           "modify_date >= %s AND modify_date < %s " \
                                           "AND item_no = %s"
+        # 고시정보 입력
 
         # 상품 조회
         self.query_select_goods_item_no2 = "SELECT * FROM b2c_goods WHERE item_no = %s"
@@ -40,6 +41,12 @@ class GoodsRegistDao:
         # 주문내역 조회
         self.query_select_goods = "SELECT * FROM b2c_goods WHERE " \
                                   "modify_date >= %s AND modify_date < %s "
+
+        # 고시정보 업데이트
+        self.query_update_sub_goods_ofiicial_info = "UPDATE b2c_goods_sub " \
+                                                    "SET issure= %s, refund_condition = %s, official_expriation_date = %s, " \
+                                                    "use_condition = %s, use_brand=%s, counsel_tel_no=%s, estimated_shipping=%s " \
+                                                    "WHERE item_no = %s"
 
         # 상품(마켓) 정보 업데이트
         self.query_update_goods_market_info = "UPDATE b2c_goods " \
@@ -184,6 +191,39 @@ class GoodsRegistDao:
                 order_limit.get('OrderLimitPeriod'), order_limit.get('OrderLimitCount')
             )
         return Utils().makeResponse(StrRepository().error_none)
+
+    def update_goods_sub_official_info(self, official_info_model):
+        try:
+            Logger.logger.info('Update goods_sub Official Info Start')
+            Logger.logger.info("db connect...")
+            db = MysqlDatabase()
+            Logger.logger.info("connect Success!!")
+
+            goods_sub = db.selectQuery(self.query_select_goods_sub_item_no, official_info_model.item_no)
+
+            if len(goods_sub) > 0:
+                Logger.logger.info("not goods_sub info")
+                Logger.logger.info("goods_sub info Insert Task Start")
+                db.executeQuery(self.query_insert_goods_sub_init, official_info_model.item_no)
+                Logger.logger.info("goods_sub info Insert Task Success!!!")
+
+            sub_list = official_info_model.sub_info_list
+            Logger.logger.info("goods_sub official info update Start!!")
+            Logger.logger.info(len(sub_list))
+            db.executeQuery(
+                self.query_update_sub_goods_ofiicial_info, sub_list[0].get('AddValue'),
+                sub_list[4].get('AddValue'), sub_list[1].get('AddValue'), sub_list[2].get('AddValue'),
+                sub_list[3].get('AddValue'), sub_list[5].get('AddValue'), sub_list[6].get('AddValue'),
+                official_info_model.item_no
+            )
+            Logger.logger.info("goods_sub official info update Success!!!!")
+        except BaseException as e:
+            Logger.logger.info("goods_sub Official Info DataBase Error")
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return Utils().makeResponse(StrRepository().error_none)
+
+
 
     def update_goods_coupon_info(self, coupon_info):
         Logger.logger.info('[0]Update goods coupon info start')

@@ -188,7 +188,7 @@ class OfficialInfo:
         self.group_code = params.get('GroupCode', '34')
         self.sub_info_list = [
             {"Code": '34-1', "AddYn": 'Y', "AddValue": params.get('issuer',"(주)스마트콘") },
-            {"Code": '34-2', "AddYn": 'Y', "AddValue": params.get('official_expiration_date',"상품 상세 페이지에 제공") },
+            {"Code": '34-2', "AddYn": 'Y', "AddValue": params.get('official_expiration_date',"상품별상이 / 상세페이지참고 (프로모션 상품 예외)") },
             {"Code": '34-3', "AddYn": 'Y', "AddValue": params.get('use_condition', "상품 상세 페이지에 제공") },
             {"Code": '34-4', "AddYn": 'Y', "AddValue": params.get('use_brand', "상품 상세 페이지에 제공") },
             {"Code": '34-5', "AddYn": 'Y', "AddValue": params.get('refund_condition',"전액환불 불가")},
