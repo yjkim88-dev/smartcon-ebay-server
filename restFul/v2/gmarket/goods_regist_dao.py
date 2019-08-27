@@ -131,7 +131,7 @@ class GoodsRegistDao:
                 'apply_place_url': goods['APPLY_PLACE_URL'],
                 'auto_use_term_duration': goods['AUTO_USE_TERM_DURATION'],
                 'category_code': goods['CATEGORY_CODE'],
-                'order_limit_max': goods['ORDER_LIMIT_MAX'],
+                'order_limit_max': goods['ORDER_LIMIT_MAX'],        # goods_sub
                 'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
                 'order_limit_count': goods['ORDER_LIMIT_COUNT'],
                 'issure': goods['ISSURE'],

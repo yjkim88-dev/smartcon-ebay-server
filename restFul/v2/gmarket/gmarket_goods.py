@@ -11,7 +11,7 @@ class GmarketGoods(Resource):
     def get(self):
         Logger.logger.info("[GET] gmarket goods")
         try:
-            params = request.values
+            params = request.args
             gmkt_goods_result = GmarketGoodsService.mysql_fetch_goods(params)
             if gmkt_goods_result.get('errorCode') != "00":
                 return Utils().makeResponse((StrRepository().error_system))
