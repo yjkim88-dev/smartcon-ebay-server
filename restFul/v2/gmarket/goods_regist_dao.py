@@ -67,8 +67,8 @@ class GoodsRegistDao:
                                                  "b2c_goods.small_image = %s, b2c_goods.regist_user = %s, " \
                                                  "b2c_goods.shipping_group_code = %s, " \
                                                  "b2c_goods_sub.order_limit_max = %s, b2c_goods_sub.order_limit_period=%s," \
-                                                 "b2c_goods_sub.order_limit_count = %s" \
-                                                 "WHERE item_no = %s"
+                                                 "b2c_goods_sub.order_limit_count = %s " \
+                                                 "WHERE b2c_goods.item_no = %s"
         # 쿠폰 정보(쿠폰마켓) 업데이트
         self.query_update_goods_coupon_info = "UPDATE b2c_goods " \
                                               "SET modify_date = %s, auto_term_duration = %s, auto_use_term_duration = %s, " \
@@ -109,8 +109,8 @@ class GoodsRegistDao:
             goods = goods[0]
             goods = {
                 'price': goods['PRICE'],
-                'create_date': str(goods['CREATE_DATE']),
-                'modify_date': str(goods['MODIFY_DATE']),
+                'create_date': str(goods['CREATE_DATE']) if goods['CREATE_DATE'] is not None else None,
+                'modify_date': str(goods['MODIFY_DATE']) if goods['MODIFY_DATE'] is not None else None,
                 'use_information': goods['USE_INFORMATION'],
                 'auto_term_duration': goods['AUTO_TERM_DURATION'],
                 'help_desk_telno': goods['HELP_DESK_TELNO'],
@@ -118,7 +118,7 @@ class GoodsRegistDao:
                 'small_image': goods['SMALL_IMAGE'],
                 'default_image': goods['DEFAULT_IMAGE'],
                 'shipping_group_code': goods['SHIPPING_GROUP_CODE'],
-                'expiration_date': str(goods['EXPIRATION_DATE']),
+                'expiration_date': str(goods['EXPIRATION_DATE']) if goods['EXPIRATION_DATE'] is not None else None,
                 'apply_place': goods['APPLY_PLACE'],
                 'item_no': goods['ITEM_NO'],
                 'stock_qty': goods['STOCK_QTY'],
@@ -127,7 +127,7 @@ class GoodsRegistDao:
                 'gd_html': goods['GD_HTML'],
                 'out_item_no': goods['OUT_ITEM_NO'],
                 'maker_no': goods['MAKER_NO'],
-                'display_date': str(goods['DISPLAY_DATE']),
+                'display_date': str(goods['DISPLAY_DATE']) if goods['DISPLAY_DATE'] is not None else None,
                 'apply_place_url': goods['APPLY_PLACE_URL'],
                 'auto_use_term_duration': goods['AUTO_USE_TERM_DURATION'],
                 'category_code': goods['CATEGORY_CODE'],
@@ -144,12 +144,12 @@ class GoodsRegistDao:
                 'service_name': goods['SERVICE_NAME'],
                 'valid_term_type': goods['VALID_TERM_TYPE'],
                 'auto_term_start_day': goods['AUTO_TERM_START_DAY'],
-                'fixed_term_start_date': goods['FIXED_TERM_START_DATE'],
-                'fixed_term_end_date': goods['FIXED_TERM_END_DATE'],
+                'fixed_term_start_date': str(goods['FIXED_TERM_START_DATE']) if goods['FIXED_TERM_START_DATE'] is not None else None,
+                'fixed_term_end_date': str(goods['FIXED_TERM_END_DATE']) if goods['FIXED_TERM_END_DATE'] is not None else None,
                 'use_term_type': goods['USE_TERM_TYPE'],
                 'auto_use_term_start_day': goods['AUTO_USE_TERM_START_DAY'],
-                'fixed_use_term_start_date': goods['FIXED_USE_TERM_START_DATE'],
-                'fixed_use_term_end_date': goods['FIXED_USE_TERM_END_DATE'],
+                'fixed_use_term_start_date': str(goods['FIXED_USE_TERM_START_DATE']) if goods['FIXED_USE_TERM_START_DATE'] is not None else None,
+                'fixed_use_term_end_date': str(goods['FIXED_USE_TERM_END_DATE']) if goods['FIXED_USE_TERM_END_DATE'] is not None else None,
                 'find_guide': goods['FIND_GUIDE'],
                 'publication_corp': goods['PUBLICATION_CORP'],
                 'publication_corp_web_url': goods['PUBLICATION_CORP_WEB_URL'],
@@ -216,7 +216,7 @@ class GoodsRegistDao:
 
             goods_sub = db.selectQuery(self.query_select_goods_sub_item_no, official_info_model.item_no)
 
-            if len(goods_sub) > 0:
+            if len(goods_sub) < 0:
                 Logger.logger.info("not goods_sub info")
                 Logger.logger.info("goods_sub info Insert Task Start")
                 db.executeQuery(self.query_insert_goods_sub_init, official_info_model.item_no)
