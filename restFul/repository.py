@@ -9,6 +9,7 @@ class StrRepository:
         self.error_goods_regist = '96', '상품 등록에 실패 했습니다.'
         self.error_official_regist = '95', '고시정보 등록에 실패 했습니다.'
         self.error_coupon_regist = '94', '쿠폰정보 등록에 실패 했습니다.'
+        self.error_coupon_regist_db = '94-1', 'DB에 없는 쿠폰정보입니다.'
         self.error_price_regist = '93', '가격정보 등록에 실패 했습니다.'
         self.error_premium_regist = '92', '가격정보 등록에 실패 했습니다.'
         self.error_already_regist = '91', '이미 블랙리스트에 등록된 사용자 입니다.'

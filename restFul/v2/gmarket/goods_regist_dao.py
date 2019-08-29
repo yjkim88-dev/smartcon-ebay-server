@@ -447,7 +447,7 @@ class GoodsRegistDao:
                 coupon_info.get('IsCancel'), coupon_info.get('CouponImageUrl'), coupon_info.get('GmktItemNo')
             )
         else:
-            return Utils().makeResponse(StrRepository().error_coupon_regist)
+            return Utils().makeResponse(StrRepository().error_coupon_regist_db)
 
         Logger.logger.info('[2]Update Goods Coupon Info Update Success')
         return Utils().makeResponse(StrRepository().error_none)
