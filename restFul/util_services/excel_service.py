@@ -7,9 +7,10 @@ from restFul.util_services.file_service import FileService
 class ExcelGeneratorV2:
     __excel_folder_path = 'excel_temp'
 
-    def __init__(self, subject):
+    def __init__(self, subject, is_head=True):
         self.page = 1
         self.subject = subject
+        self.is_head = is_head
         self.subject_length = 0
 
         FileService.file_check(self.__excel_folder_path)
@@ -244,13 +245,16 @@ class ExcelGeneratorV2:
         return base_row, base_col
 
     def write_excel(self):
-        subject_row_num = 0
-
-        # 엑셀 제목 작업
         self.set_subject_length()
-        # self.work_sheet.merge_range(subject_row_num, 0, subject_row_num, self.subject_length - 1, self.subject, self.format.get('subject'))
+        if self.is_head:
+            subject_row_num = 1
+            self.work_sheet.merge_range(subject_row_num, 0, subject_row_num, self.subject_length - 1, self.subject,
+                                        self.format.get('subject'))
+            cur_row_num = subject_row_num +2
+        else:
+            cur_row_num = 0
 
-        cur_row_num = subject_row_num
+            # 엑셀 제목 작업
         cur_col_num = 0
         max_row = 0
         max_col = 0

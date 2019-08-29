@@ -190,7 +190,7 @@ class GmarketExcelDownloadService:
             'find_guide': 'string'
         }
 
-        excel = ExcelGeneratorV2('coupon_info')
+        excel = ExcelGeneratorV2('coupon_info', False)
         excel.set_page(1)
 
         # 회원정보 입력
