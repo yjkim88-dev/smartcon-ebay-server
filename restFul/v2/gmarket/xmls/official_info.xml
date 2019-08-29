@@ -18,10 +18,6 @@
                 <SubInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
                 <SubInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
                 <SubInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
-                <TradeInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
-                <TradeInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
-                <TradeInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
-                <TradeInfoList xmlns="http://tpl.gmarket.co.kr/tpl.xsd"/>
             </AddOfficialInfo>
         </AddOfficialInfo>
     </soap:Body>

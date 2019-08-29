@@ -135,7 +135,6 @@ class OrderList(Resource):
     def get(self):
         try:
             Logger.logger.info ('get--')
-
             param_start_date = request.args.get('start_date')
             param_end_date = request.args.get('end_date')
             param_data_select = request.args.get('data_select')

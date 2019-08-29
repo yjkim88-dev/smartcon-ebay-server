@@ -4,7 +4,7 @@ from restFul.v2.gmarket.gmarket_api import GmarketAPI
 from restFul.repository import StrRepository
 from restFul.utils import Utils
 from Logger import Logger
-
+from restFul.util_services.excel_service import ExcelGeneratorV2
 
 
 class GmarketGoodsService:
@@ -16,6 +16,18 @@ class GmarketGoodsService:
         try:
             item_no = params['item_no']
             result = GoodsRegistDao().fetch_goods(item_no)
+            if result.get('errorCode') != "00":
+                return result
+        except BaseException as e:
+            Logger.logger.info('goods service faild')
+            Logger.logger.waring(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return result
+
+    @classmethod
+    def mysql_fetch_goods_list(cls):
+        try:
+            result = GoodsRegistDao().fetch_goods_list_coupon()
             if result.get('errorCode') != "00":
                 return result
         except BaseException as e:
@@ -131,3 +143,61 @@ class GmarketGoodsService:
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_system)
         return add_premium_api_result
+
+
+class GmarketExcelDownloadService:
+    @classmethod
+    def coupon_excel_down(cls, CouponInfo):
+        cus_key = [
+            'item_no', 'item_name', 'use_information', 'default_image', 'apply_place', 'apply_place_url', 'apply_place_telephone','price',
+            'help_desk_telno', 'valid_term_type', 'auto_term_start_day', 'auto_term_duration', 'fixed_term_start_date',
+            'fixed_term_end_date', 'use_term_type', 'auto_use_term_start_day', 'auto_use_term_duration',
+            'fixed_use_term_start_date', 'fixed_use_term_end_date', 'publication_corp',
+            'publication_corp_web_url', 'find_guide'
+        ]
+
+        cus_header = [
+            '지마켓 상품코드', '상품명', '사용 유의 사항', '쿠폰이미지', '사용처', '사용처 URL', '사용처 전화번호', '가격', '고객센터', '정산기간 타입',
+            '정산시작일', '쿠폰 정산기간', '정산특정시작날짜', '정산특정종료날짜', '유효기간 타입', '유효기간시작일', '쿠폰 유효기간', '유효특정시작날짜', '유효특정종료날짜',
+            '발행업체', '발행업체웹페이지주소', '찾아가는 길'
+        ]
+
+        cus_format = {
+            'item_no': 'string',
+            'item_name': 'string',
+            'apply_place_telephone': 'string',
+            'use_information': 'string',
+            'default_image': 'string',
+            'apply_place': 'string',
+            'apply_place_url': 'string',
+            'price': 'string',
+            'help_desk_telno': 'string',
+            'coupon_type': 'string',
+            'coupon_money_type': 'string',
+            'valid_term_type': 'string',
+            'auto_term_start_day': 'string',
+            'auto_term_duration': 'string',
+            'fixed_term_start_date': 'string',
+            'fixed_term_end_date': 'string',
+            'use_term_type': 'string',
+            'auto_use_term_start_day': 'string',
+            'auto_use_term_duration': 'string',
+            'fixed_use_term_start_date': 'string',
+            'fixed_use_term_end_date': 'string',
+            'is_customer_name_view': 'string',
+            'publication_corp': 'string',
+            'publication_corp_web_url': 'string',
+            'find_guide': 'string'
+        }
+
+        excel = ExcelGeneratorV2('coupon_info')
+        excel.set_page(1)
+
+        # 회원정보 입력
+        excel.set_header(cus_key, cus_header)
+        excel.set_field(CouponInfo, 1)
+        excel.set_field_format(cus_format)
+        excel.set_header_opt({})
+
+        excel.write_excel()
+        return excel.get_xlsx_path()

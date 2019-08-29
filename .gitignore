@@ -284,3 +284,5 @@ ebay/tcl
 ebay/LICENSE.txt
 #logs
 ./logs
+
+excel_temp/

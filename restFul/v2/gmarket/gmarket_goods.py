@@ -68,3 +68,4 @@ class GmarketGoods(Resource):
         elif post_type == "premium":
             response = GmarketGoodsService.premium_api(params)
         return response
+

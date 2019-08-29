@@ -196,12 +196,13 @@ class OfficialInfo:
             {"Code": '34-7', "AddYn": 'Y', "AddValue": params.get('estimated_shipping', "구매후 10분이내") }
         ]
 
-        self.trade_info_list = [
-            {"Code": '999-1', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-            {"Code": '999-2', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-            {"Code": '999-3', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-            {"Code": '999-4', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
-        ]
+        # self.trade_info_list = [
+        #     {"Code": '999-1', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+        #     {"Code": '999-2', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+        #     {"Code": '999-3', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+        #     {"Code": '999-4', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"},
+        #     {"Code": '999-5', "AddYn": 'N', "AddValue": "상품 상세 페이지에 제공"}
+        # ]
 
     def set_xml(self):
         try:
@@ -229,25 +230,25 @@ class OfficialInfo:
 
             sub_info_list = AddOfficialInfo.findall('xsd:SubInfoList', self.namespace)
 
-            trade_info_list = AddOfficialInfo.findall('xsd:TradeInfoList', self.namespace)
+            # trade_info_list = AddOfficialInfo.findall('xsd:TradeInfoList', self.namespace)
 
             if len(sub_info_list) > len(self.sub_info_list):
                 Logger.logger.info('필요한 sub_info_list 요소보다 파라미터 sub_info_list 값이 적습니다.')
                 return Utils().makeResponse(StrRepository().error_official_regist)
 
-            if len(trade_info_list) > len(self.trade_info_list):
-                Logger.logger.info('필요한 trade_info_list 요소보다 파라미터 trade_info_list 값이 적습니다.')
-                return Utils().makeResponse(StrRepository().error_official_regist)
+            # if len(trade_info_list) > len(self.trade_info_list):
+            #     Logger.logger.info('필요한 trade_info_list 요소보다 파라미터 trade_info_list 값이 적습니다.')
+            #     return Utils().makeResponse(StrRepository().error_official_regist)
 
             for idx in range(len(sub_info_list)):
                 sub_info_list[idx].attrib['Code'] = self.sub_info_list[idx].get('Code','')
                 sub_info_list[idx].attrib['AddYn'] = self.sub_info_list[idx].get('AddYn','')
                 sub_info_list[idx].attrib['AddValue'] = self.sub_info_list[idx].get('AddValue','')
 
-            for idx in range(len(trade_info_list)):
-                trade_info_list[idx].attrib['Code'] = self.trade_info_list[idx].get('Code', '')
-                trade_info_list[idx].attrib['AddYn'] = self.trade_info_list[idx].get('AddYn', '')
-                trade_info_list[idx].attrib['AddValue'] = self.trade_info_list[idx].get('AddValue', '')
+            # for idx in range(len(trade_info_list)):
+            #     trade_info_list[idx].attrib['Code'] = self.trade_info_list[idx].get('Code', '')
+            #     trade_info_list[idx].attrib['AddYn'] = self.trade_info_list[idx].get('AddYn', '')
+            #     trade_info_list[idx].attrib['AddValue'] = self.trade_info_list[idx].get('AddValue', '')
 
             Logger.logger.info("==== OfficialInfo API xml body setting Success ====")
         except BaseException as e:

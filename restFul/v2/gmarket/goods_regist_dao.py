@@ -38,6 +38,12 @@ class GoodsRegistDao:
                                              "LEFT OUTER JOIN b2c_goods_sub " \
                                              "ON b2c_goods.ITEM_NO = b2c_goods_sub.ITEM_NO " \
                                              "WHERE b2c_goods.ITEM_NO = %s"
+
+        # 상품들 조회
+        self.query_select_goods_item_list = "SELECT * FROM b2c_goods " \
+                                            "LEFT OUTER JOIN b2c_goods_sub " \
+                                            "ON b2c_goods.ITEM_NO = b2c_goods_sub.ITEM_NO "
+
         # 주문내역 조회
         self.query_select_goods = "SELECT * FROM b2c_goods WHERE " \
                                   "modify_date >= %s AND modify_date < %s "
@@ -131,7 +137,7 @@ class GoodsRegistDao:
                 'apply_place_url': goods['APPLY_PLACE_URL'],
                 'auto_use_term_duration': goods['AUTO_USE_TERM_DURATION'],
                 'category_code': goods['CATEGORY_CODE'],
-                'order_limit_max': goods['ORDER_LIMIT_MAX'],        # goods_sub
+                'order_limit_max': goods['ORDER_LIMIT_MAX'],  # goods_sub
                 'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
                 'order_limit_count': goods['ORDER_LIMIT_COUNT'],
                 'issure': goods['ISSURE'],
@@ -144,12 +150,16 @@ class GoodsRegistDao:
                 'service_name': goods['SERVICE_NAME'],
                 'valid_term_type': goods['VALID_TERM_TYPE'],
                 'auto_term_start_day': goods['AUTO_TERM_START_DAY'],
-                'fixed_term_start_date': str(goods['FIXED_TERM_START_DATE']) if goods['FIXED_TERM_START_DATE'] is not None else None,
-                'fixed_term_end_date': str(goods['FIXED_TERM_END_DATE']) if goods['FIXED_TERM_END_DATE'] is not None else None,
+                'fixed_term_start_date': str(goods['FIXED_TERM_START_DATE']) if goods[
+                                                                                    'FIXED_TERM_START_DATE'] is not None else None,
+                'fixed_term_end_date': str(goods['FIXED_TERM_END_DATE']) if goods[
+                                                                                'FIXED_TERM_END_DATE'] is not None else None,
                 'use_term_type': goods['USE_TERM_TYPE'],
                 'auto_use_term_start_day': goods['AUTO_USE_TERM_START_DAY'],
-                'fixed_use_term_start_date': str(goods['FIXED_USE_TERM_START_DATE']) if goods['FIXED_USE_TERM_START_DATE'] is not None else None,
-                'fixed_use_term_end_date': str(goods['FIXED_USE_TERM_END_DATE']) if goods['FIXED_USE_TERM_END_DATE'] is not None else None,
+                'fixed_use_term_start_date': str(goods['FIXED_USE_TERM_START_DATE']) if goods[
+                                                                                            'FIXED_USE_TERM_START_DATE'] is not None else None,
+                'fixed_use_term_end_date': str(goods['FIXED_USE_TERM_END_DATE']) if goods[
+                                                                                        'FIXED_USE_TERM_END_DATE'] is not None else None,
                 'find_guide': goods['FIND_GUIDE'],
                 'publication_corp': goods['PUBLICATION_CORP'],
                 'publication_corp_web_url': goods['PUBLICATION_CORP_WEB_URL'],
@@ -161,6 +171,148 @@ class GoodsRegistDao:
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_system)
         return Utils().makeResponse(StrRepository().error_none, goods)
+
+    def fetch_goods_list_coupon(self):
+        try:
+            goods_list = []
+            Logger.logger.info('===== fetchGoods STEP1 DB Connection =====')
+            db = MysqlDatabase()
+            Logger.logger.info('===== fetchGoods DB Connection Complete=====')
+
+            Logger.logger.info('===== fetchGoods STEP2 Fetch Goods =====')
+            mysql_goods_list = db.selectQuery(self.query_select_goods_item_list)
+            Logger.logger.info('===== fetchGoods Fetch Goods Complete=====')
+            for goods in mysql_goods_list:
+                goods_tmp = {
+                    'price': goods['PRICE'],
+                    'create_date': str(goods['CREATE_DATE']) if goods['CREATE_DATE'] is not None else None,
+                    'modify_date': str(goods['MODIFY_DATE']) if goods['MODIFY_DATE'] is not None else None,
+                    'use_information': goods['USE_INFORMATION'],
+                    'auto_term_duration': goods['AUTO_TERM_DURATION'],
+                    'help_desk_telno': goods['HELP_DESK_TELNO'],
+                    'large_image': goods['LARGE_IMAGE'],
+                    'small_image': goods['SMALL_IMAGE'],
+                    'default_image': goods['DEFAULT_IMAGE'],
+                    'shipping_group_code': goods['SHIPPING_GROUP_CODE'],
+                    'expiration_date': str(goods['EXPIRATION_DATE']) if goods['EXPIRATION_DATE'] is not None else None,
+                    'apply_place': goods['APPLY_PLACE'],
+                    'item_no': goods['ITEM_NO'],
+                    'stock_qty': goods['STOCK_QTY'],
+                    'item_name': goods['ITEM_NAME'],
+                    'apply_place_telephone': goods['APPLY_PLACE_TELEPHONE'],
+                    'gd_html': goods['GD_HTML'],
+                    'out_item_no': goods['OUT_ITEM_NO'],
+                    'maker_no': goods['MAKER_NO'],
+                    'display_date': str(goods['DISPLAY_DATE']) if goods['DISPLAY_DATE'] is not None else None,
+                    'apply_place_url': goods['APPLY_PLACE_URL'],
+                    'auto_use_term_duration': goods['AUTO_USE_TERM_DURATION'],
+                    'category_code': goods['CATEGORY_CODE'],
+                    'order_limit_max': goods['ORDER_LIMIT_MAX'],  # goods_sub
+                    'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
+                    'order_limit_count': goods['ORDER_LIMIT_COUNT'],
+                    'issure': goods['ISSURE'],
+                    'refund_condition': goods['REFUND_CONDITION'],
+                    'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
+                    'use_condition': goods['USE_CONDITION'],
+                    'use_brand': goods['USE_BRAND'],
+                    'counsel_tel_no': goods['COUNSEL_TEL_NO'],
+                    'estimated_shipping': goods['ESTIMATED_SHIPPING'],
+                    'service_name': goods['SERVICE_NAME'],
+                    'valid_term_type': goods.get('VALID_TERM_TYPE') if goods['VALID_TERM_TYPE'] is not None else 'AutoTerm',
+                    'auto_term_start_day': goods.get('AUTO_TERM_START_DAY') if goods['AUTO_TERM_START_DAY'] is not None else '0',
+                    'fixed_term_start_date': str(goods['FIXED_TERM_START_DATE']) if goods[
+                                                                                        'FIXED_TERM_START_DATE'] is not None else None,
+                    'fixed_term_end_date': str(goods['FIXED_TERM_END_DATE']) if goods[
+                                                                                    'FIXED_TERM_END_DATE'] is not None else None,
+                    'use_term_type': goods.get('USE_TERM_TYPE') if goods['USE_TERM_TYPE'] is not None else 'AutoTerm',
+                    'auto_use_term_start_day': goods.get('AUTO_USE_TERM_START_DAY') if goods['AUTO_USE_TERM_START_DAY'] is not None else '0',
+                    'fixed_use_term_start_date': str(goods['FIXED_USE_TERM_START_DATE']) if goods[
+                                                                                                'FIXED_USE_TERM_START_DATE'] is not None else None,
+                    'fixed_use_term_end_date': str(goods['FIXED_USE_TERM_END_DATE']) if goods[
+                                                                                            'FIXED_USE_TERM_END_DATE'] is not None else None,
+                    'find_guide': goods['FIND_GUIDE'],
+                    'publication_corp': goods.get('PUBLICATION_CORP') if goods['PUBLICATION_CORP'] is not None else "(주) 스마트콘",
+                    'publication_corp_web_url': goods.get('PUBLICATION_CORP_WEB_URL') if goods.get('PUBLICATION_CORP_WEB_URL') is not None else "http://www.smartconcorp.com/",
+                    'is_cancel': goods['IS_CANCEL'],
+                    'coupon_image_url': goods['COUPON_IMAGE_URL'],
+                }
+                goods_list.append(goods_tmp)
+        except BaseException as e:
+            Logger.logger.info('===== fetchGoods Faild =====')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return Utils().makeResponse(StrRepository().error_none, goods_list)
+
+    def fetch_goods_list(self):
+        try:
+            goods_list = []
+            Logger.logger.info('===== fetchGoods STEP1 DB Connection =====')
+            db = MysqlDatabase()
+            Logger.logger.info('===== fetchGoods DB Connection Complete=====')
+
+            Logger.logger.info('===== fetchGoods STEP2 Fetch Goods =====')
+            mysql_goods_list = db.selectQuery(self.query_select_goods_item_list)
+            Logger.logger.info('===== fetchGoods Fetch Goods Complete=====')
+            for goods in mysql_goods_list:
+                goods_tmp = {
+                    'price': goods['PRICE'],
+                    'create_date': str(goods['CREATE_DATE']) if goods['CREATE_DATE'] is not None else None,
+                    'modify_date': str(goods['MODIFY_DATE']) if goods['MODIFY_DATE'] is not None else None,
+                    'use_information': goods['USE_INFORMATION'],
+                    'auto_term_duration': goods['AUTO_TERM_DURATION'],
+                    'help_desk_telno': goods['HELP_DESK_TELNO'],
+                    'large_image': goods['LARGE_IMAGE'],
+                    'small_image': goods['SMALL_IMAGE'],
+                    'default_image': goods['DEFAULT_IMAGE'],
+                    'shipping_group_code': goods['SHIPPING_GROUP_CODE'],
+                    'expiration_date': str(goods['EXPIRATION_DATE']) if goods['EXPIRATION_DATE'] is not None else None,
+                    'apply_place': goods['APPLY_PLACE'],
+                    'item_no': goods['ITEM_NO'],
+                    'stock_qty': goods['STOCK_QTY'],
+                    'item_name': goods['ITEM_NAME'],
+                    'apply_place_telephone': goods['APPLY_PLACE_TELEPHONE'],
+                    'gd_html': goods['GD_HTML'],
+                    'out_item_no': goods['OUT_ITEM_NO'],
+                    'maker_no': goods['MAKER_NO'],
+                    'display_date': str(goods['DISPLAY_DATE']) if goods['DISPLAY_DATE'] is not None else None,
+                    'apply_place_url': goods['APPLY_PLACE_URL'],
+                    'auto_use_term_duration': goods['AUTO_USE_TERM_DURATION'],
+                    'category_code': goods['CATEGORY_CODE'],
+                    'order_limit_max': goods['ORDER_LIMIT_MAX'],  # goods_sub
+                    'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
+                    'order_limit_count': goods['ORDER_LIMIT_COUNT'],
+                    'issure': goods['ISSURE'],
+                    'refund_condition': goods['REFUND_CONDITION'],
+                    'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
+                    'use_condition': goods['USE_CONDITION'],
+                    'use_brand': goods['USE_BRAND'],
+                    'counsel_tel_no': goods['COUNSEL_TEL_NO'],
+                    'estimated_shipping': goods['ESTIMATED_SHIPPING'],
+                    'service_name': goods['SERVICE_NAME'],
+                    'valid_term_type': goods['VALID_TERM_TYPE'],
+                    'auto_term_start_day': goods['AUTO_TERM_START_DAY'],
+                    'fixed_term_start_date': str(goods['FIXED_TERM_START_DATE']) if goods[
+                                                                                        'FIXED_TERM_START_DATE'] is not None else None,
+                    'fixed_term_end_date': str(goods['FIXED_TERM_END_DATE']) if goods[
+                                                                                    'FIXED_TERM_END_DATE'] is not None else None,
+                    'use_term_type': goods['USE_TERM_TYPE'],
+                    'auto_use_term_start_day': goods['AUTO_USE_TERM_START_DAY'],
+                    'fixed_use_term_start_date': str(goods['FIXED_USE_TERM_START_DATE']) if goods[
+                                                                                                'FIXED_USE_TERM_START_DATE'] is not None else None,
+                    'fixed_use_term_end_date': str(goods['FIXED_USE_TERM_END_DATE']) if goods[
+                                                                                            'FIXED_USE_TERM_END_DATE'] is not None else None,
+                    'find_guide': goods['FIND_GUIDE'],
+                    'publication_corp': goods['PUBLICATION_CORP'],
+                    'publication_corp_web_url': goods['PUBLICATION_CORP_WEB_URL'],
+                    'is_cancel': goods['IS_CANCEL'],
+                    'coupon_image_url': goods['COUPON_IMAGE_URL'],
+                }
+                goods_list.append(goods_tmp)
+        except BaseException as e:
+            Logger.logger.info('===== fetchGoods Faild =====')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return Utils().makeResponse(StrRepository().error_none, goods_list)
 
     def goods_market_info_db_service(self, item_no, add_item_model, user_id):
         Logger.logger.info('[0]insert goods start')
@@ -258,24 +410,40 @@ class GoodsRegistDao:
                 Logger.logger.info("goods_sub info Insert Task Success!!!")
             today = datetime.datetime.now()
             Logger.logger.info(self.query_update_goods_coupon_info_v2 % (today, coupon_info.get('AutoTermDuration'),
-                coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
-                coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'),coupon_info.get('ApplyPlaceUrl'),
-                coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('ServiceName'), coupon_info.get('ValidTermType'),
-                coupon_info.get('AutoTermStartDay'), coupon_info.get('FixedTermStartDate'),
-                coupon_info.get('FixedTermEndDate'), coupon_info.get('UseTermType'), coupon_info.get('AutoUseTermStartDay'),
-                coupon_info.get('FixedUseTermStartDate'), coupon_info.get('FixedUseTermEndDate'),
-                coupon_info.get('FindGuide'), coupon_info.get('PublicationCorp'), coupon_info.get('PublicationCorpWebUrl'),
-                coupon_info.get('IsCancel'), coupon_info.get('CouponImageUrl'), coupon_info.get('GmktItemNo')))
+                                                                         coupon_info.get('AutoUseTermDuration'),
+                                                                         coupon_info.get('UseInformation'),
+                                                                         coupon_info.get('HelpDeskTelNo'),
+                                                                         coupon_info.get('ApplyPlace'),
+                                                                         coupon_info.get('ApplyPlaceUrl'),
+                                                                         coupon_info.get('ApplyPlaceTelephone'),
+                                                                         coupon_info.get('ServiceName'),
+                                                                         coupon_info.get('ValidTermType'),
+                                                                         coupon_info.get('AutoTermStartDay'),
+                                                                         coupon_info.get('FixedTermStartDate'),
+                                                                         coupon_info.get('FixedTermEndDate'),
+                                                                         coupon_info.get('UseTermType'),
+                                                                         coupon_info.get('AutoUseTermStartDay'),
+                                                                         coupon_info.get('FixedUseTermStartDate'),
+                                                                         coupon_info.get('FixedUseTermEndDate'),
+                                                                         coupon_info.get('FindGuide'),
+                                                                         coupon_info.get('PublicationCorp'),
+                                                                         coupon_info.get('PublicationCorpWebUrl'),
+                                                                         coupon_info.get('IsCancel'),
+                                                                         coupon_info.get('CouponImageUrl'),
+                                                                         coupon_info.get('GmktItemNo')))
 
             db.executeQuery(
                 self.query_update_goods_coupon_info_v2, today, coupon_info.get('AutoTermDuration'),
                 coupon_info.get('AutoUseTermDuration'), coupon_info.get('UseInformation'),
-                coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'),coupon_info.get('ApplyPlaceUrl'),
-                coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('ServiceName'), coupon_info.get('ValidTermType'),
+                coupon_info.get('HelpDeskTelNo'), coupon_info.get('ApplyPlace'), coupon_info.get('ApplyPlaceUrl'),
+                coupon_info.get('ApplyPlaceTelephone'), coupon_info.get('ServiceName'),
+                coupon_info.get('ValidTermType'),
                 coupon_info.get('AutoTermStartDay'), coupon_info.get('FixedTermStartDate'),
-                coupon_info.get('FixedTermEndDate'), coupon_info.get('UseTermType'), coupon_info.get('AutoUseTermStartDay'),
+                coupon_info.get('FixedTermEndDate'), coupon_info.get('UseTermType'),
+                coupon_info.get('AutoUseTermStartDay'),
                 coupon_info.get('FixedUseTermStartDate'), coupon_info.get('FixedUseTermEndDate'),
-                coupon_info.get('FindGuide'), coupon_info.get('PublicationCorp'), coupon_info.get('PublicationCorpWebUrl'),
+                coupon_info.get('FindGuide'), coupon_info.get('PublicationCorp'),
+                coupon_info.get('PublicationCorpWebUrl'),
                 coupon_info.get('IsCancel'), coupon_info.get('CouponImageUrl'), coupon_info.get('GmktItemNo')
             )
         else:
