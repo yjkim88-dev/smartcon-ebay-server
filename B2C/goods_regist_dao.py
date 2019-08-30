@@ -21,16 +21,17 @@ class GoodsRegistDao:
 
         # 주문내역 조회
         self.query_select_goods = "SELECT * FROM b2c_goods WHERE " \
-                                  "modify_date >= %s AND modify_date < %s "
+                                  "modify_date >= %s AND modify_date < %s " \
+                                  "ORDER BY modify_date DESC"
 
         self.query_update_goods = "UPDATE b2c_goods " \
-                                  "SET modify_date = %s, out_item_no = %s, category_code = %s, item_no = %s," \
-                                          "item_name = %s, gd_html = %s, maker_no = %s, expiration_date = %s, price = %s," \
-                                          "default_image = %s, large_image = %s, small_image = %s, auto_term_duration = %s," \
-                                          "auto_use_term_duration = %s,"\
-                                          "use_information = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s," \
+                                  "SET modify_date = %s, out_item_no = %s, category_code = %s, item_no = %s, " \
+                                          "item_name = %s, gd_html = %s, maker_no = %s, expiration_date = %s, price = %s, " \
+                                          "default_image = %s, large_image = %s, small_image = %s, auto_term_duration = %s, " \
+                                          "auto_use_term_duration = %s, "\
+                                          "use_information = %s, help_desk_telno = %s, apply_place = %s, apply_place_url = %s, " \
                                           "apply_place_telephone = %s, display_date = %s, stock_qty = %s, regist_user = %s, shipping_group_code = %s " \
-                                  "WHERE item_no = %s"
+                                  "WHERE item_no = %s "
 
     def insertGoods(self, out_item_no, category_code, item_no, item_name, gd_html, maker_no, expiration_date,
                     price, default_image, large_image, small_image, auto_term_duration, auto_use_term_duration, use_information, help_desk_telno,

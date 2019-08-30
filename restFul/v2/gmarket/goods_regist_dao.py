@@ -46,7 +46,8 @@ class GoodsRegistDao:
 
         # 주문내역 조회
         self.query_select_goods = "SELECT * FROM b2c_goods WHERE " \
-                                  "modify_date >= %s AND modify_date < %s "
+                                  "modify_date >= %s AND modify_date < %s " \
+                                  "ORDER BY modify_date DESC"
 
         # 고시정보 업데이트
         self.query_update_sub_goods_ofiicial_info = "UPDATE b2c_goods_sub " \
@@ -110,6 +111,11 @@ class GoodsRegistDao:
             Logger.logger.info('===== fetchGoods DB Connection Complete=====')
 
             Logger.logger.info('===== fetchGoods STEP2 Fetch Goods =====')
+
+            sub_goods = db.selectQuery(self.query_select_goods_sub_item_no, item_no)
+            if len(sub_goods) < 0:
+                db.executeQuery(self.query_insert_goods_sub_init, item_no)
+
             goods = db.selectQuery(self.query_select_goods_item_no_v3, item_no)
             Logger.logger.info('===== fetchGoods Fetch Goods Complete=====')
             goods = goods[0]
@@ -243,7 +249,7 @@ class GoodsRegistDao:
             return Utils().makeResponse(StrRepository().error_system)
         return Utils().makeResponse(StrRepository().error_none, goods_list)
 
-    def fetch_goods_list(self):
+    def fetch_goods_list(self,start_date, end_date):
         try:
             goods_list = []
             Logger.logger.info('===== fetchGoods STEP1 DB Connection =====')
@@ -484,6 +490,8 @@ class GoodsRegistDao:
         end_date = end_tmp.strftime('%Y%m%d')
 
         if (item_no != None and item_no != ''):
-            return db.selectQuery(self.query_select_goods_item_no, start_date, end_date, item_no)
+            goods = db.selectQuery(self.query_select_goods_item_no, start_date, end_date, item_no)
+            return Utils().makeResponse(StrRepository().error_none, goods)
         else:
-            return db.selectQuery(self.query_select_goods, start_date, end_date)
+            goods_list = db.selectQuery(self.query_select_goods, start_date, end_date)
+            return Utils().makeResponse(StrRepository().error_none, goods_list)
