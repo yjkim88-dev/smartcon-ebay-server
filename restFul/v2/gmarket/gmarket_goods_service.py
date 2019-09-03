@@ -38,6 +38,18 @@ class GmarketGoodsService:
         return result
 
     @classmethod
+    def mysql_fetch_official_goods_list(cls):
+        try:
+            result = GoodsRegistDao().fetch_official_info_goods()
+            if result.get('errorCode') != "00":
+                return result
+        except BaseException as e:
+            Logger.logger.info('goods official info list fetch service faild')
+            Logger.logger.waring(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return result
+
+    @classmethod
     def mysql_fetch_goods_list(cls):
         try:
             result = GoodsRegistDao().fetch_goods_list_coupon()
@@ -159,6 +171,41 @@ class GmarketGoodsService:
 
 
 class GmarketExcelDownloadService:
+    @classmethod
+    def create_official_infos_excel(cls, goods_infos):
+        goods_info_keys = [
+            'item_no', 'issuer', 'refund_condition', 'official_expriation_date', 'use_condition', 'use_brand',
+            'counsel_tel_no', 'estimated_shipping'
+        ]
+
+        goods_info_header = [
+            '지마켓 상품코드', '발행자', '잔액 환급 조건', '유효기간', '이용조건', '이용가능 매장', '소비자상담관련 전화번호',
+            '주문후 예상 배송시간'
+        ]
+
+        goods_info_style = {
+            'item_no': 'string',
+            'issuer': 'string',
+            'refund_condition': 'string',
+            'official_expriation_date': 'string',
+            'use_condition': 'string',
+            'use_brand': 'string',
+            'counsel_tel_no': 'string',
+            'estimated_shipping': 'string'
+        }
+
+        excel = ExcelGeneratorV2("지마켓 고시정보", False)
+        excel.set_page(1)
+        excel.set_header(goods_info_keys, goods_info_header)
+        excel.set_field(goods_infos, 1)
+        excel.set_field_format(goods_info_style)
+        excel.set_header_opt({})
+
+        excel.write_excel()
+
+        return excel.get_xlsx_path()
+
+
     @classmethod
     def create_goods_infos_excel(cls, goods_infos):
         goods_info_key = [

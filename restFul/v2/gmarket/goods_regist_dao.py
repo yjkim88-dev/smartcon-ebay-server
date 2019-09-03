@@ -178,6 +178,36 @@ class GoodsRegistDao:
             return Utils().makeResponse(StrRepository().error_system)
         return Utils().makeResponse(StrRepository().error_none, goods)
 
+    def fetch_official_info_goods(self):
+        try:
+            goods_list = []
+            Logger.logger.info('===== fetchGoodsOfficialInfo STEP1 DB Connection =====')
+            db = MysqlDatabase()
+            Logger.logger.info('===== fetchGoodsOfficialInfo DB Connection Complete=====')
+
+            Logger.logger.info('===== fetchGoodsOfficialInfo STEP2 Fetch GoodsList =====')
+
+            mysql_goods_list = db.selectQuery(self.query_select_goods_item_list)
+            Logger.logger.info('===== fetchGoodsOfficialInfo Fetch GoodsList Complete=====')
+            for goods in mysql_goods_list:
+                goods_tmp = {
+                    'item_no': goods['ITEM_NO'],
+                    'issuer': goods['ISSUER'] if goods['ISSUER'] is not None else '(주) 스마트콘',
+                    'refund_condition': goods['REFUND_CONDITION'],
+                    'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
+                    'use_condition': goods['USE_CONDITION'],
+                    'use_brand': goods['USE_BRAND'],
+                    'counsel_tel_no': goods['COUNSEL_TEL_NO'],
+                    'estimated_shipping': goods['ESTIMATED_SHIPPING']
+                }
+                goods_list.append(goods_tmp)
+
+        except BaseException as e:
+            Logger.logger.info('===== fetchGoodsOfficialInfo Faild =====')
+            Logger.logger.info(e)
+            return Utils().makeResponse(StrRepository().error_system)
+        return Utils().makeResponse(StrRepository().error_none, goods_list)
+
     def fetch_goods_list_coupon(self):
         try:
             goods_list = []

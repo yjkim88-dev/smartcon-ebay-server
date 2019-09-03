@@ -22,11 +22,11 @@ class GmarketGoodsExcel(Resource):
             excel_path = GmarketExcelDownloadService.create_coupon_infos_excel(excel_infos)
 
         if get_type == "all_official_info":
-            fetch_goods_list_result = GmarketGoodsService.mysql_fetch_goods_list()
+            fetch_goods_list_result = GmarketGoodsService.mysql_fetch_official_goods_list()
             if fetch_goods_list_result.get('errorCode') != "00":
                 return fetch_goods_list_result
             excel_infos = fetch_goods_list_result.get('results')
-            excel_path = GmarketExcelDownloadService.create_coupon_infos_excel(excel_infos)
+            excel_path = GmarketExcelDownloadService.create_official_infos_excel(excel_infos)
 
         elif get_type == "search":
             fetch_goods_list_result = GmarketGoodsService.mysql_fetch_goods_list_(params)
