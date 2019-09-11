@@ -51,7 +51,7 @@ class GoodsRegistDao:
 
         # 고시정보 업데이트
         self.query_update_sub_goods_ofiicial_info = "UPDATE b2c_goods_sub " \
-                                                    "SET issure= %s, refund_condition = %s, official_expriation_date = %s, " \
+                                                    "SET issuer= %s, refund_condition = %s, official_expriation_date = %s, " \
                                                     "use_condition = %s, use_brand=%s, counsel_tel_no=%s, estimated_shipping=%s " \
                                                     "WHERE item_no = %s"
 
