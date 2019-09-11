@@ -95,6 +95,7 @@ class EzwelRegistGoods(Resource):
         print(response)
         Logger.logger.info("registImage Response")
         Logger.logger.info(response)
+        Logger.logger.info(response.content)
         soup = Utils().getSoup(response.content)
 
         return soup.find('responseezwel')
