@@ -146,7 +146,7 @@ class GoodsRegistDao:
                 'order_limit_max': goods['ORDER_LIMIT_MAX'],  # goods_sub
                 'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
                 'order_limit_count': goods['ORDER_LIMIT_COUNT'],
-                'issure': goods['ISSURE'],
+                'issuer': goods['ISSUER'],
                 'refund_condition': goods['REFUND_CONDITION'],
                 'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
                 'use_condition': goods['USE_CONDITION'],
