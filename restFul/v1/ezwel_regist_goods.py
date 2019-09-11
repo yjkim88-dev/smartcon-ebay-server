@@ -73,6 +73,9 @@ class EzwelRegistGoods(Resource):
         print(goods_params)
 
         response = requests.post(self.send_goods_url, params=goods_params)
+        Logger.logger.info("ezwel goodsregist Response")
+        Logger.logger.info(response.status_code)
+        Logger.logger.info(response.content)
         soup = Utils().getSoup(response.content)
         print(soup.prettify())
 
@@ -119,8 +122,11 @@ class EzwelRegistGoods(Resource):
         }
 
         Logger.logger.info(goods_shop_params)
-
+        
         response = requests.post(self.send_regist_goods_shop_url, params=goods_shop_params)
+        Logger.logger.info("ezwel registStore Response")
+        Logger.logger.info(response.status_code)
+        Logger.logger.info(response.content)
         soup = Utils().getSoup(response.content)
 
         return soup.find('responseezwel')
@@ -145,6 +151,9 @@ class EzwelRegistGoods(Resource):
         Logger.logger.info(regist_goods_rn_params)
 
         response = requests.post(self.send_regist_goods_rn_url, params=regist_goods_rn_params)
+        Logger.logger.info("ezwel registPin Response")
+        Logger.logger.info(response.status_code)
+        Logger.logger.info(response.content)
         soup = Utils().getSoup(response.content)
 
         Logger.logger.info(soup.prettify())
