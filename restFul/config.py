@@ -5,7 +5,7 @@ CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
 
 BASE_DIR = os.path.abspath(os.path.join(CONFIG_DIR, os.pardir))
 
-HOST_ADR = 'REAL'  # LOCAL, TEST, REAL
+HOST_ADR = 'TEST'  # LOCAL, TEST, REAL
 
 config_par = configparser.ConfigParser()
 read_ok = config_par.read(os.path.dirname(os.path.abspath(__file__)) + "/../config.ini")
