@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import os
-import html
+import requests
 
 from Logger import Logger
 from restFul.config import encticket
@@ -465,6 +465,26 @@ class PremiumInfo:
         Logger.logger.info("==== PremiumInfo API xml Success ====")
         Logger.logger.info(result.decode())
         return Utils().makeResponse(StrRepository().error_none, result)
+
+
+class GmarketCategoryModel:
+    GMARKET_CATEGORY_URL = "http://tpl.gmarket.co.kr/v1/Category/Category.xml"
+    def fetch_categories_xml(self):
+        response = None
+        try:
+            response = requests.get(self.GMARKET_CATEGORY_URL)
+        except BaseException as e:
+            Logger.logger.info("===== GMARKET_CATEGORY_REQUEST FAILD =====")
+            Logger.logger.info(e)
+
+        if response.code == 200:
+            self.xml_categories = response.content
+            return Utils().makeResponse(StrRepository().error_none)
+
+        return Utils().makeResponse(StrRepository().error_system)
+
+    def convert_xml_to_dict(self):
+        pass
 
 
 
