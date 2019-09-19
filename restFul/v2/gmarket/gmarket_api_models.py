@@ -230,11 +230,13 @@ class OfficialInfo:
 
             sub_info_list = AddOfficialInfo.findall('xsd:SubInfoList', self.namespace)
 
+            # 쿠폰쪽에서는 안써도 무관한 거래정보 혹시 나중에 필요하시면 사용.
             # trade_info_list = AddOfficialInfo.findall('xsd:TradeInfoList', self.namespace)
 
             if len(sub_info_list) > len(self.sub_info_list):
                 Logger.logger.info('필요한 sub_info_list 요소보다 파라미터 sub_info_list 값이 적습니다.')
                 return Utils().makeResponse(StrRepository().error_official_regist)
+            
 
             # if len(trade_info_list) > len(self.trade_info_list):
             #     Logger.logger.info('필요한 trade_info_list 요소보다 파라미터 trade_info_list 값이 적습니다.')
