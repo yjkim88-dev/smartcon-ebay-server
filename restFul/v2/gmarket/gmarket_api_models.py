@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import os
-import html
+import requests
 
 from Logger import Logger
 from restFul.config import encticket
@@ -230,11 +230,13 @@ class OfficialInfo:
 
             sub_info_list = AddOfficialInfo.findall('xsd:SubInfoList', self.namespace)
 
+            # 쿠폰쪽에서는 안써도 무관한 거래정보 혹시 나중에 필요하시면 사용.
             # trade_info_list = AddOfficialInfo.findall('xsd:TradeInfoList', self.namespace)
 
             if len(sub_info_list) > len(self.sub_info_list):
                 Logger.logger.info('필요한 sub_info_list 요소보다 파라미터 sub_info_list 값이 적습니다.')
                 return Utils().makeResponse(StrRepository().error_official_regist)
+            
 
             # if len(trade_info_list) > len(self.trade_info_list):
             #     Logger.logger.info('필요한 trade_info_list 요소보다 파라미터 trade_info_list 값이 적습니다.')
@@ -463,6 +465,26 @@ class PremiumInfo:
         Logger.logger.info("==== PremiumInfo API xml Success ====")
         Logger.logger.info(result.decode())
         return Utils().makeResponse(StrRepository().error_none, result)
+
+
+class GmarketCategoryModel:
+    GMARKET_CATEGORY_URL = "http://tpl.gmarket.co.kr/v1/Category/Category.xml"
+    def fetch_categories_xml(self):
+        response = None
+        try:
+            response = requests.get(self.GMARKET_CATEGORY_URL)
+        except BaseException as e:
+            Logger.logger.info("===== GMARKET_CATEGORY_REQUEST FAILD =====")
+            Logger.logger.info(e)
+
+        if response.code == 200:
+            self.xml_categories = response.content
+            return Utils().makeResponse(StrRepository().error_none)
+
+        return Utils().makeResponse(StrRepository().error_system)
+
+    def convert_xml_to_dict(self):
+        pass
 
 
 

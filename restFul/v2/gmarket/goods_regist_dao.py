@@ -104,6 +104,35 @@ class GoodsRegistDao:
                                              "SET modify_date = %s, display_date = %s, stock_qty = %s " \
                                              "WHERE item_no = %s"
 
+    def upload_scms_data(self, params):
+        # 상품(마켓)정보 업데이트2
+
+        db = MysqlDatabase()
+        goods = db.selectQuery(self.query_select_goods_item_no2, params.get('ITEM_NO'))
+
+        if (len(goods) > 0):
+            pass
+        else:
+            db.executeQuery(
+                self.query_insert_goods,
+                params.get('CREATE_DATE'), params.get('MODIFY_DATE'), params.get('OUT_ITEM_NO'),
+                params.get('CAEGORY_CODE'),
+                params.get('ITEM_NO'), params.get("ITEM_NAME"), params.get("GD_HTML"), params.get("MAKER_NO"),
+                params.get("EXPIRATION_DATE"), params.get("PRICE"), params.get("DEFAULT_IMAGE"),
+                params.get("LARGE_IMAGE"),
+                params.get("SMALL_IMAGE"), params.get("AUTO_TERM_DURATION"), params.get("AUTO_USE_TERM_DURATION"),
+                params.get("USE_INFORMATION"), params.get("HELP_DESK_TELNO"),
+                params.get("APPLY_PLACE"), params.get("APPLY_PLACE_URL"), params.get("APPLY_PLACE_TELEPHONE"),
+                params.get("DISPLAY_DATE"),
+                params.get("STOCK_QTY"), params.get("REGIST_USER"), params.get("SHIPPING_GROUP_CODE"),
+            )
+
+            db.executeQuery(
+                self.query_insert_sub_goods, params.get('ITEM_NO'), params.get('OrderLimitMax'),
+                params.get('OrderLimitPeriod'), params.get('OrderLimitCount')
+            )
+        return 1
+
     def fetch_goods(self, item_no):
         try:
             Logger.logger.info('===== fetchGoods STEP1 DB Connection =====')
