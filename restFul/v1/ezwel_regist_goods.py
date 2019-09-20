@@ -86,25 +86,22 @@ class EzwelRegistGoods(Resource):
         java_app = gateway.entry_point
 
         # step2. 상품 이미지 등록
-        # image_params = {
-        #     'goodsCd': java_app.encode(Utils().noneToSpace(goodscd)),  # 상품 등록시 리턴되는 상품코드
-        #     'imgUrl': java_app.encode(Utils().noneToSpace(img_url)),
-        #     'imgDetailUrl': java_app.encode(Utils().noneToSpace(img_detail_url))
-        # }
         image_params = {
-            'goodsCd': "1",  # 상품 등록시 리턴되는 상품코드
-            'imgUrl': "@",
-            'imgDetailUrl': "3"
+            'goodsCd': java_app.encode(Utils().noneToSpace(goodscd)),  # 상품 등록시 리턴되는 상품코드
+            'imgUrl': java_app.encode(Utils().noneToSpace(img_url)),
+            'imgDetailUrl': java_app.encode(Utils().noneToSpace(img_detail_url))
         }
         Logger.logger.info(image_params)
         Logger.logger.info(image_params.get('goodsCd'))
         Logger.logger.info(image_params.get('imgUrl'))
         Logger.logger.info(image_params.get('imgDetailUrl'))
-        Logger.logger.info(type(image_params.get('goodsCd')))
-        Logger.logger.info(type(image_params.get('imgUrl')))
-        Logger.logger.info(type(image_params.get('imgDetailUrl')))
+        Logger.logger.info(java_app.decode(image_params.get('goodsCd')))
+        Logger.logger.info(java_app.decode(image_params.get('imgUrl')))
+        Logger.logger.info(java_app.decode(image_params.get('imgDetailUrl')))
+
 
         response = requests.post(self.send_regist_goods_url, data=image_params)
+
         print(response)
         Logger.logger.info("registImage Response")
         Logger.logger.info(response)
