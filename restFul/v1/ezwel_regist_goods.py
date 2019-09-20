@@ -86,10 +86,15 @@ class EzwelRegistGoods(Resource):
         java_app = gateway.entry_point
 
         # step2. 상품 이미지 등록
+        # image_params = {
+        #     'goodsCd': java_app.encode(Utils().noneToSpace(goodscd)),  # 상품 등록시 리턴되는 상품코드
+        #     'imgUrl': java_app.encode(Utils().noneToSpace(img_url)),
+        #     'imgDetailUrl': java_app.encode(Utils().noneToSpace(img_detail_url))
+        # }
         image_params = {
-            'goodsCd': java_app.encode(Utils().noneToSpace(goodscd)),  # 상품 등록시 리턴되는 상품코드
-            'imgUrl': java_app.encode(Utils().noneToSpace(img_url)),
-            'imgDetailUrl': java_app.encode(Utils().noneToSpace(img_detail_url))
+            'goodsCd': 1,  # 상품 등록시 리턴되는 상품코드
+            'imgUrl': 2,
+            'imgDetailUrl': 3
         }
 
         Logger.logger.info(image_params)
