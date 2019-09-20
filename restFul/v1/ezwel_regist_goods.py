@@ -93,8 +93,14 @@ class EzwelRegistGoods(Resource):
         }
 
         Logger.logger.info(image_params)
+        Logger.logger.info(image_params.get('goodsCd'))
+        Logger.logger.info(image_params.get('imgUrl'))
+        Logger.logger.info(image_params.get('imgDetailUrl'))
+        Logger.logger.info(type(image_params.get('goodsCd')))
+        Logger.logger.info(type(image_params.get('imgUrl')))
+        Logger.logger.info(type(image_params.get('imgDetailUrl')))
 
-        response = requests.post(self.send_regist_goods_url, params=image_params)
+        response = requests.post(self.send_regist_goods_url, data=image_params)
         print(response)
         Logger.logger.info("registImage Response")
         Logger.logger.info(response)
