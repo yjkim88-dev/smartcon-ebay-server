@@ -185,15 +185,13 @@ class OfficialInfo:
 
     def __init__(self, params):
         self.item_no = str(params.get('item_no', ''))
-        self.group_code = params.get('GroupCode', '34')
+        self.group_code = params.get('GroupCode', '37')
         self.sub_info_list = [
-            {"Code": '34-1', "AddYn": 'Y', "AddValue": params.get('issuer',"(주)스마트콘") },
-            {"Code": '34-2', "AddYn": 'Y', "AddValue": params.get('official_expiration_date',"상품별상이 / 상세페이지참고 (프로모션 상품 예외)") },
-            {"Code": '34-3', "AddYn": 'Y', "AddValue": params.get('use_condition', "상품 상세 페이지에 제공") },
-            {"Code": '34-4', "AddYn": 'Y', "AddValue": params.get('use_brand', "상품 상세 페이지에 제공") },
-            {"Code": '34-5', "AddYn": 'Y', "AddValue": params.get('refund_condition',"전액환불 불가")},
-            {"Code": '34-6', "AddYn": 'Y', "AddValue": params.get('counsel_tel_no',"02-561-0671") },
-            {"Code": '34-7', "AddYn": 'Y', "AddValue": params.get('estimated_shipping', "구매후 10분이내") }
+            {"Code": '37-1', "AddYn": 'Y', "AddValue": params.get('issuer',"(주)스마트콘") },
+            {"Code": '37-2', "AddYn": 'Y', "AddValue": params.get('official_expiration_date_or_use_condition',"상품별상이 / 상세페이지참고 (프로모션 상품 예외)") },
+            {"Code": '37-3', "AddYn": 'Y', "AddValue": params.get('use_brand', "상품 상세 페이지에 제공")},
+            {"Code": '37-4', "AddYn": 'Y', "AddValue": params.get('refund_condition_and_rule', "상품 상세 페이지에 제공") },
+            {"Code": '37-5', "AddYn": 'Y', "AddValue": params.get('counsel_tel_no', "02-561-0671")}
         ]
 
         # self.trade_info_list = [

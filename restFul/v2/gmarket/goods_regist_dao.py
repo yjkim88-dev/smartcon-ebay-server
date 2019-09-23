@@ -51,8 +51,8 @@ class GoodsRegistDao:
 
         # 고시정보 업데이트
         self.query_update_sub_goods_ofiicial_info = "UPDATE b2c_goods_sub " \
-                                                    "SET issuer= %s, refund_condition = %s, official_expriation_date = %s, " \
-                                                    "use_condition = %s, use_brand=%s, counsel_tel_no=%s, estimated_shipping=%s " \
+                                                    "SET issuer= %s, OFFICIAL_EXPRIATION_DATE_OR_USE_CONDITION = %s, use_brand = %s, " \
+                                                    "refund_condition_and_rule = %s, counsel_tel_no=%s " \
                                                     "WHERE item_no = %s"
 
         # 상품(마켓) 정보 업데이트
@@ -176,12 +176,10 @@ class GoodsRegistDao:
                 'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
                 'order_limit_count': goods['ORDER_LIMIT_COUNT'],
                 'issuer': goods['ISSUER'],
-                'refund_condition': goods['REFUND_CONDITION'],
-                'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
-                'use_condition': goods['USE_CONDITION'],
+                'official_expiration_date_or_use_condition': goods['OFFICIAL_EXPRIATION_DATE_OR_USE_CONDITION'],
                 'use_brand': goods['USE_BRAND'],
+                'refund_condition_and_rule': goods['REFUND_CONDITION_AND_RULE'],
                 'counsel_tel_no': goods['COUNSEL_TEL_NO'],
-                'estimated_shipping': goods['ESTIMATED_SHIPPING'],
                 'service_name': goods['SERVICE_NAME'],
                 'valid_term_type': goods['VALID_TERM_TYPE'],
                 'auto_term_start_day': goods['AUTO_TERM_START_DAY'],
@@ -222,12 +220,10 @@ class GoodsRegistDao:
                 goods_tmp = {
                     'item_no': goods['ITEM_NO'],
                     'issuer': goods['ISSUER'] if goods['ISSUER'] is not None else '(주) 스마트콘',
-                    'refund_condition': goods['REFUND_CONDITION'],
-                    'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
-                    'use_condition': goods['USE_CONDITION'],
+                    'official_expiration_date_or_use_condition': goods['OFFICIAL_EXPRIATION_DATE_OR_USE_CONDITION'],
                     'use_brand': goods['USE_BRAND'],
+                    'refund_condition_and_rule': goods['REFUND_CONDITION_AND_RULE'],
                     'counsel_tel_no': goods['COUNSEL_TEL_NO'],
-                    'estimated_shipping': goods['ESTIMATED_SHIPPING']
                 }
                 goods_list.append(goods_tmp)
 
@@ -275,13 +271,11 @@ class GoodsRegistDao:
                     'order_limit_max': goods['ORDER_LIMIT_MAX'],  # goods_sub
                     'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
                     'order_limit_count': goods['ORDER_LIMIT_COUNT'],
-                    'issure': goods['ISSURE'],
-                    'refund_condition': goods['REFUND_CONDITION'],
-                    'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
-                    'use_condition': goods['USE_CONDITION'],
+                    'issuer': goods['ISSUER'],
+                    'official_expiration_date_or_use_condition': goods['OFFICIAL_EXPRIATION_DATE_OR_USE_CONDITION'],
                     'use_brand': goods['USE_BRAND'],
+                    'refund_condition_and_rule': goods['REFUND_CONDITION_AND_RULE'],
                     'counsel_tel_no': goods['COUNSEL_TEL_NO'],
-                    'estimated_shipping': goods['ESTIMATED_SHIPPING'],
                     'service_name': goods['SERVICE_NAME'],
                     'valid_term_type': goods.get('VALID_TERM_TYPE') if goods['VALID_TERM_TYPE'] is not None else 'AutoTerm',
                     'auto_term_start_day': goods.get('AUTO_TERM_START_DAY') if goods['AUTO_TERM_START_DAY'] is not None else '0',
@@ -346,13 +340,11 @@ class GoodsRegistDao:
                     'order_limit_max': goods['ORDER_LIMIT_MAX'],  # goods_sub
                     'order_limit_period': goods['ORDER_LIMIT_PERIOD'],
                     'order_limit_count': goods['ORDER_LIMIT_COUNT'],
-                    'issure': goods['ISSURE'],
-                    'refund_condition': goods['REFUND_CONDITION'],
-                    'official_expriation_date': goods['OFFICIAL_EXPRIATION_DATE'],
-                    'use_condition': goods['USE_CONDITION'],
+                    'issuer': goods['ISSUER'],
+                    'official_expiration_date_or_use_condition': goods['OFFICIAL_EXPRIATION_DATE_OR_USE_CONDITION'],
                     'use_brand': goods['USE_BRAND'],
+                    'refund_condition_and_rule': goods['REFUND_CONDITION_AND_RULE'],
                     'counsel_tel_no': goods['COUNSEL_TEL_NO'],
-                    'estimated_shipping': goods['ESTIMATED_SHIPPING'],
                     'service_name': goods['SERVICE_NAME'],
                     'valid_term_type': goods['VALID_TERM_TYPE'],
                     'auto_term_start_day': goods['AUTO_TERM_START_DAY'],
@@ -445,8 +437,7 @@ class GoodsRegistDao:
             db.executeQuery(
                 self.query_update_sub_goods_ofiicial_info, sub_list[0].get('AddValue'),
                 sub_list[4].get('AddValue'), sub_list[1].get('AddValue'), sub_list[2].get('AddValue'),
-                sub_list[3].get('AddValue'), sub_list[5].get('AddValue'), sub_list[6].get('AddValue'),
-                official_info_model.item_no
+                sub_list[3].get('AddValue'), official_info_model.item_no
             )
             Logger.logger.info("goods_sub official info update Success!!!!")
         except BaseException as e:
