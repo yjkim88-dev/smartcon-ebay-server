@@ -30,6 +30,8 @@ class Utils:
             return str
 
     def convertStringDateToM(self, date):
+        if isinstance(date, int):
+            date = str(date)
         return date[:4] + '-' + date[4:6] + '-' + date[6:]
 
     @staticmethod

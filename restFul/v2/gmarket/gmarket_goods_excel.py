@@ -14,6 +14,7 @@ class GmarketGoodsExcel(Resource):
     def get(self):
         params = request.args
         get_type = request.args.get('type')
+
         if get_type == "all_coupon":
             fetch_goods_list_result = GmarketGoodsService.mysql_fetch_goods_list()
             if fetch_goods_list_result.get('errorCode') != "00":
