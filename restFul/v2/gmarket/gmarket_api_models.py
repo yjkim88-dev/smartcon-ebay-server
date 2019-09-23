@@ -8,7 +8,7 @@ from restFul.utils import Utils
 from restFul.repository import StrRepository
 xml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xmls')
 
-
+## API 파라미터 명과 클래스 파라미터 명이 다른 경우 동일한 사용자 입력값을 활용하는 경우다.
 
 class AddItem:
     namespace = {
@@ -272,16 +272,12 @@ class CouponInfo:
         'base': "http://tpl.gmarket.co.kr/",
         'xsd': "http://tpl.gmarket.co.kr/tpl.xsd"
     }
-
     name = "AddItemCoupon"
-
     def __init__(self, params):
         fixed_term_start_date = Utils().convertStringDateToM(params.get('fixed_term_start_date')) if params.get('fixed_term_start_date') is not None else None
         fixed_term_end_date  = Utils().convertStringDateToM(params.get('fixed_term_end_date')) if params.get('fixed_term_end_date') is not None else None
         fixed_use_term_start_date = Utils().convertStringDateToM(params.get('fixed_use_term_start_date')) if params.get('fixed_use_term_start_date') is not None else None
         fixed_use_term_end_date = Utils().convertStringDateToM(params.get('fixed_use_term_end_date')) if params.get('fixed_use_term_end_date') is not None else None
-        if(params.get('valid_term_type')):
-            pass
         self.add_item_coupon = {
             'GmktItemNo' : str(params.get('item_no', '')),
             'CouponType' : params.get('coupon_type', 'Mobile'),
