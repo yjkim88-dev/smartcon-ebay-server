@@ -100,7 +100,13 @@ class GmarketGoodsService:
             add_item_result = add_item_api.run()  # API 작업 수행
 
             if add_item_result.get('errorCode') != "00":  # 작업 결과 확인
-                return add_item_result  # 에러 발생
+                Logger.logger.info(add_item_result)
+                if add_item_result.get('results') == 502:
+                    add_item_result = add_item_api.run()
+                    if add_item_result.get('errorCode') != "00":  # 작업 결과 확인
+                        return add_item_result  # 에러 발생
+                else:
+                    return add_item_result  # 에러 발생
 
         except BaseException as e:
             Logger.logger.info("=========== ERROR MARKET API ===========")
@@ -117,7 +123,14 @@ class GmarketGoodsService:
             add_official_info_result = add_official_info_api.run()
 
             if add_official_info_result.get('errorCode') != "00":
-                return add_official_info_result
+                Logger.logger.info(add_official_info_result)
+                if add_official_info_result.get('results') == 502:
+                    add_official_info_result = add_official_info_api.run()
+                    if add_official_info_result.get('errorCode') != "00":  # 작업 결과 확인
+                        return add_official_info_result
+                else:
+                    return add_official_info_result
+
         except BaseException as e:
             Logger.logger.info("=========== ERROR OFFICIAL API ===========")
             Logger.logger.info(e)
@@ -133,7 +146,14 @@ class GmarketGoodsService:
             add_coupon_info_result = add_coupon_info_api.run()
 
             if add_coupon_info_result.get('errorCode') != "00":
-                return add_coupon_info_result
+                Logger.logger.info(add_coupon_info_result)
+                if add_coupon_info_result.get('results') == 502:
+                    add_coupon_info_result = add_coupon_info_api.run()
+                    if add_coupon_info_result.get('errorCode') != "00":  # 작업 결과 확인
+                        return add_coupon_info_result
+                else:
+                    return add_coupon_info_result
+
         except BaseException as e:
             Logger.logger.info("=========== ERROR COUPON MARKET API ===========")
             Logger.logger.info(e)
@@ -149,7 +169,9 @@ class GmarketGoodsService:
             add_price_api_result = add_price_api.run()
 
             if add_price_api_result.get('errorCode') != "00":
+                Logger.logger.info(add_price_api_result)
                 return add_price_api_result
+
         except BaseException as e:
             Logger.logger.info("=========== ERROR PRICE API ===========")
             Logger.logger.info(e)
