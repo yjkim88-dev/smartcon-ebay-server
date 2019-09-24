@@ -124,12 +124,7 @@ class GmarketGoodsService:
 
             if add_official_info_result.get('errorCode') != "00":
                 Logger.logger.info(add_official_info_result)
-                if add_official_info_result.get('results') == 502:
-                    add_official_info_result = add_official_info_api.run()
-                    if add_official_info_result.get('errorCode') != "00":  # 작업 결과 확인
-                        return add_official_info_result
-                else:
-                    return add_official_info_result
+                return add_official_info_result
 
         except BaseException as e:
             Logger.logger.info("=========== ERROR OFFICIAL API ===========")
@@ -147,12 +142,7 @@ class GmarketGoodsService:
 
             if add_coupon_info_result.get('errorCode') != "00":
                 Logger.logger.info(add_coupon_info_result)
-                if add_coupon_info_result.get('results') == 502:
-                    add_coupon_info_result = add_coupon_info_api.run()
-                    if add_coupon_info_result.get('errorCode') != "00":  # 작업 결과 확인
-                        return add_coupon_info_result
-                else:
-                    return add_coupon_info_result
+                return add_coupon_info_result
 
         except BaseException as e:
             Logger.logger.info("=========== ERROR COUPON MARKET API ===========")
