@@ -88,6 +88,11 @@ class GmarketAPI:
     def __parsing_response(self):   # 응답값 파싱
         self.title_logging('STEP3 PARSING RESPONSE')
         try:
+            if self.response.status_code != 200:
+                print(self.response.status_code)
+                print(self.response.content)
+                return self.make_response_data(StrRepository().error_gmkt_network, self.response.status_code)
+
             code, result = gmarket_response(self.name, self.response.content)       # 응답 XML 파싱
 
             if code != "00":                            # 요청 실패
