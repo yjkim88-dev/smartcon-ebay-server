@@ -26,7 +26,8 @@ class StrRepository:
 
         self.error_auth = '401', '인증키가 올바르지 않습니다.'
 
-        self.error_gmkt_network = '502', '네트워크 에러가 발생했습니다. 등록 확인후 (등록/수정) 재시도 바랍니다.'
+        self.error_gmkt_network = '502', '네트워크 에러가 발생했습니다. 지마켓 등록번호 확인 후 (등록/수정) 재시도 바랍니다.'
+        self.success_gmkt_excel_upload = '00', '성공적으로 등록되었습니다.'
         # 이지웰 상품등록
         self.error_ezwel_goods = '50', '상품 등록 오류'
         self.error_ezwel_goods_image = '51', '상품 이미지 등록 오류'

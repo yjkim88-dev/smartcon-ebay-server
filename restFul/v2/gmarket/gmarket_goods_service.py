@@ -75,21 +75,25 @@ class GmarketGoodsService:
 
         official_result = cls.official_api(params)
         if official_result.get('errorCode') != "00":
+            official_result['results'] = params['item_no']
             return official_result
 
         coupon_market_result = cls.coupon_market_api(params)
         if coupon_market_result.get('errorCode') != "00":
+            coupon_market_result['results'] = params['item_no']
             return coupon_market_result
 
         price_result = cls.price_api(params)
         if price_result.get('errorCode') != "00":
+            price_result['results'] = params['item_no']
             return price_result
 
         premium_result = cls.premium_api(params)
         if premium_result.get('errorCode') != "00":
+            premium_result['results'] = params['item_no']
             return premium_result
 
-        return Utils().makeResponse(StrRepository().error_none)
+        return Utils().makeResponse(StrRepository().success_gmkt_excel_upload, params['item_no'])
 
     @classmethod
     def market_api(cls, params):

@@ -87,23 +87,31 @@ class GmarketAPI:
     
     def __parsing_response(self):   # 응답값 파싱
         self.title_logging('STEP3 PARSING RESPONSE')
+        item_no = None
+        if self.name == "AddOfficialInfo":
+            item_no = self.model.item_no
+        elif self.name == "AddItemCoupon":
+            item_no = self.model.add_item_coupon.get('GmktItemNo')
+        elif self.name == "AddPrice":
+            item_no = self.model.add_price.get('GmktItemNo')
+        elif self.name == "AddPremiumItem":
+            item_no = self.model.item_no
         try:
             if self.response.status_code != 200:
-                print(self.response.status_code)
-                print(self.response.content)
-                return self.make_response_data(StrRepository().error_gmkt_network, self.response.status_code)
+
+                return self.make_response_data(StrRepository().error_gmkt_network, item_no)
 
             code, result = gmarket_response(self.name, self.response.content)       # 응답 XML 파싱
 
             if code != "00":                            # 요청 실패
                 self.title_logging('ERROR RESPONSE')
                 Logger.logger.info(html.escape(result))
-                return self.make_response(False)
+                return self.make_response(False, item_no)
 
             if result.get('Result') == 'Fail':          # 특정 값 에러
                 self.title_logging("ERROR RESPONSE")
                 Logger.logger.info(html.escape(result.get('Comment')))
-                return self.make_response(False)
+                return self.make_response(False, item_no)
 
             if self.name == "AddItem":                          # AddItem인 경우 추가 작업
                 item_no = result.get('GmktItemNo')              # 지마켓 상품 번호 업데이트
@@ -116,11 +124,11 @@ class GmarketAPI:
         except BaseException as e:                          # 파싱 실패
             self.title_logging('FAILD PARSING RESPONSE')
             Logger.logger.info(e)
-            return self.make_response(False)
+            return self.make_response(False, item_no)
 
         self.title_logging("SUCCESS PARSING RESPONSE")
         Logger.logger.info(result)
-        return self.make_response(True)
+        return self.make_response(True, item_no)
 
     def __database_process(self):                           # 데이터베이스 적용
         self.title_logging('STEP4 DB TASK')
