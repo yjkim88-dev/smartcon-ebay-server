@@ -101,12 +101,7 @@ class GmarketGoodsService:
 
             if add_item_result.get('errorCode') != "00":  # 작업 결과 확인
                 Logger.logger.info(add_item_result)
-                if add_item_result.get('results') == 502:
-                    add_item_result = add_item_api.run()
-                    if add_item_result.get('errorCode') != "00":  # 작업 결과 확인
-                        return add_item_result  # 에러 발생
-                else:
-                    return add_item_result  # 에러 발생
+                return add_item_result  # 에러 발생
 
         except BaseException as e:
             Logger.logger.info("=========== ERROR MARKET API ===========")
