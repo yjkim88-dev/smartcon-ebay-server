@@ -98,7 +98,7 @@ class GmarketAPI:
             item_no = self.model.item_no
         try:
             if self.response.status_code != 200:
-
+                Logger.logger.info(self.response.content)
                 return self.make_response_data(StrRepository().error_gmkt_network, item_no)
 
             code, result = gmarket_response(self.name, self.response.content)       # 응답 XML 파싱
