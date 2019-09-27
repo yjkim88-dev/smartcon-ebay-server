@@ -205,8 +205,8 @@ class EzwelRegistGoods(Resource):
             send_period_ext_yn = json_param.get('sendPeriodExtYn')
 
             # 이미지등록 파라메터
-            img_url = quote(json_param.get('imgUrl'))
-            img_detail_url = quote(json_param.get('imgDetailUrl'))
+            img_url = json_param.get('imgUrl')
+            img_detail_url = json_param.get('imgDetailUrl')
 
             # 상품 매장정보 파라메터
             directions = json_param.get('directions')
