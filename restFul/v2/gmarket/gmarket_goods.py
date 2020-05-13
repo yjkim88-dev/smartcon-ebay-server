@@ -8,6 +8,7 @@ from Logger import Logger
 
 
 class GmarketGoods(Resource):
+    # 지마켓 상품 상세보기
     def get(self):
         Logger.logger.info("[GET] gmarket goods")
         try:
@@ -21,7 +22,7 @@ class GmarketGoods(Resource):
             return Utils().makeResponse(StrRepository().error_system)
         return gmkt_goods_result
 
-
+    # 지마켓 상품등록
     def post(self):
         post_type = request.values.get('type')
         params = request.json
