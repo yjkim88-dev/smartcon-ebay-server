@@ -23,7 +23,7 @@ class Login(Resource):
         password = args.get('password')
 
         user = UserDao().selectUser(id)
-
+        print('user ========== ', user)
         Logger.logger.info (user)
 
         if (len(user) <= 0):
