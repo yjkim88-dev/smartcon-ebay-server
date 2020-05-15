@@ -57,6 +57,7 @@ class GoodsRegist(Resource):
                 return Utils().makeResponse(StrRepository().error_none, ret_list)
 
         except Exception as e:
+            print(e)
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_system)
 
