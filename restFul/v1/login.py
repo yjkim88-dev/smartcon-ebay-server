@@ -43,6 +43,7 @@ class Login(Resource):
                     return Utils().makeResponse(StrRepository().error_check_user_password)
 
         except Exception as e:
+            print('로그인 실패 ======== ', e)
             Logger.logger.info(e)
             return Utils().makeResponse(StrRepository().error_system)
 
