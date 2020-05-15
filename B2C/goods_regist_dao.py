@@ -14,8 +14,14 @@ class GoodsRegistDao:
                                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         # 기간없이 조회
-        self.query_select_goods_item_no_no_date = "SELECT * FROM b2c_goods " \
-                                                  "WHERE item_no LIKE %s"
+        self.query_select_goods_item_no_no_date = "SELECT * FROM b2c_goods WHERE " \
+                                                  "item_no = %s AND " \
+                                                  "modify_date >= %s AND modify_date < %s " \
+
+        # 기간없이 조회
+        self.query_select_goods_item_name_no_date = "SELECT * FROM b2c_goods WHERE " \
+                                                  "modify_date >= %s AND modify_date < %s " \
+                                                  "AND item_name LIKE %s"
 
         # 조회
         self.query_select_goods_item_no = "SELECT * FROM b2c_goods WHERE " \
@@ -68,10 +74,13 @@ class GoodsRegistDao:
                             help_desk_telno, apply_place, apply_place_url, apply_place_telephone, display_date,
                             stock_qty, user_id, shippinggroupcode)
 
-    def selectGoods(self, start_date, end_date, item_no=None):
+    def selectGoods(self, start_date, end_date, search_type=None, search_text=None):
         db = MysqlDatabase()
-        if (item_no != None and item_no != ''):
-            return db.selectQuery(self.query_select_goods_item_no_no_date, "%" + item_no + "%")
+        if search_type is not None and search_type != '':
+            if search_type == 'item_no':
+                return db.selectQuery(self.query_select_goods_item_no_no_date, search_text, start_date, end_date)
+            else:
+                return db.selectQuery(self.query_select_goods_item_name_no_date, start_date, end_date, "%" + search_text + "%")
         else:
             end_tmp = datetime.datetime.strptime(end_date, '%Y%m%d')
             end_tmp = end_tmp + datetime.timedelta(days=1)

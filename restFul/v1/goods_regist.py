@@ -16,9 +16,10 @@ class GoodsRegist(Resource):
         try:
             start_date = request.args.get('start_date')
             end_date = request.args.get('end_date')
-            item_no = request.args.get('item_no')
+            search_type = request.args.get('searchType')
+            search_text = request.args.get('searchText')
 
-            goods = GoodsRegistDao().selectGoods(start_date, end_date, item_no)
+            goods = GoodsRegistDao().selectGoods(start_date, end_date, search_type, search_text)
             Logger.logger.info (goods)
 
             if (len(goods) <= 0):
