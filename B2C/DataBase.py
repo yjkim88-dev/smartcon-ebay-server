@@ -45,6 +45,7 @@ class MysqlDatabase:
 
                 return result
         except Exception as e:
+            print('커넥션 에러 ========== ', e)
             Logger.logger.info(e)
             self.conn.rollback()
             self.conn.close()
