@@ -17,7 +17,7 @@ import base64, os
 class Login(Resource):
     def post(self):
         Logger.logger.info('login')
-        print('로그인 시도!!!!!')
+        print('로그인 시도!!!!')
         try:
             args = request.json
             id = args.get('id')
